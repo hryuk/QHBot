@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT+=core gui network
+QT+=core gui network xml
 
 TARGET = QHBot
 CONFIG   += console
