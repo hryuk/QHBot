@@ -1,1 +1,2 @@
+Windows:
 You must copy 'qxmpp.prl' and 'libqxmpp.a' to %QTDIR%/lib before compilation.
