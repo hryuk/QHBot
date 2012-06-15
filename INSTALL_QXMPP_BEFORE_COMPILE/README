@@ -1,2 +1,8 @@
 Windows:
 You must copy 'qxmpp.prl' and 'libqxmpp.a' to %QTDIR%/lib before compilation.
+
+Linux:
+wget http://qxmpp.googlecode.com/files/qxmpp-0.4.0.tar.gz
+tar xvf qxmpp-0.4.0.tar.gz
+cd qxmpp-0.4.0
+qmake && make && make install
