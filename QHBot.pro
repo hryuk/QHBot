@@ -13,7 +13,11 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    qhbot.cpp
 
 INCLUDEPATH += $$quote(qxmpp/include)
 LIBS += -lqxmpp
+
+HEADERS += \
+    qhbot.h
