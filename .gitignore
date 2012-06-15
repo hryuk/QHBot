@@ -10,3 +10,6 @@
 *.lai
 *.la
 *.a
+
+# Qt
+*.pro.user
