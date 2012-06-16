@@ -3,6 +3,7 @@
 QHBot::QHBot(QObject *parent): QXmppClient(parent)
 {
     connect(this,SIGNAL(messageReceived(const QXmppMessage&)),SLOT(messageReceived(const QXmppMessage&)));
+    connect(this,SIGNAL(needMsgBroadcast(const QXmppMessage&)),SLOT(sendMsgBroadcast(const QXmppMessage&)));
 }
 
 QHBot::~QHBot()
@@ -13,7 +14,26 @@ QHBot::~QHBot()
 void QHBot::messageReceived(const QXmppMessage& message)
 {
     QString from = message.from();
-    QString msg = message.body();
+    from=from.mid(0,from.indexOf('/'));
 
-    sendPacket(QXmppMessage("", from,msg));
+    QString msg = message.body();
+    if(msg.isEmpty()) return;
+
+    if(this->rosterManager().getRosterBareJids().contains(from))
+    {
+        emit needMsgBroadcast(message);
+    }
+}
+
+void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
+{
+
+    foreach(QString u,this->rosterManager().getRosterBareJids())
+    {
+        if(u!=msg.from().mid(0,msg.from().indexOf('/')))
+        {
+            qDebug()<<"Reenviando a "+u;
+            this->sendMessage(u,msg.body());
+        }
+    }
 }

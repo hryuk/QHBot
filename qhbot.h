@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QXmppClient.h>
 #include <QXmppMessage.h>
+#include <QXmppRosterManager.h>
+
+#include "qhbotusermanager.h"
 
 class QHBot : public QXmppClient
 {
@@ -14,9 +17,15 @@ public:
     ~QHBot();
 
 private:
+    QStringList users;
+    QStringList jids;
 
 public slots:
     void messageReceived(const QXmppMessage&);
+    void sendMsgBroadcast(const QXmppMessage&);
+
+signals:
+    void needMsgBroadcast(const QXmppMessage&);
 };
 
 

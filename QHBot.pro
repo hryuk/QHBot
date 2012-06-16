@@ -14,10 +14,18 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    qhbot.cpp
+    qhbot.cpp \
+    qhbotuser.cpp \
+    qhbotusermanager.cpp \
+    qhbotcommands.cpp \
+    qhbotdatamanager.cpp
 
 INCLUDEPATH += $$quote(qxmpp/include)
 LIBS += -lqxmpp
 
 HEADERS += \
-    qhbot.h
+    qhbot.h \
+    qhbotuser.h \
+    qhbotusermanager.h \
+    qhbotcommands.h \
+    qhbotdatamanager.h
