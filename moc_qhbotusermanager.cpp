@@ -22,7 +22,7 @@ static const uint qt_meta_data_QHBotUserManager[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -32,9 +32,10 @@ static const uint qt_meta_data_QHBotUserManager[] = {
  // slots: signature, parameters, type, tag, flags
       18,   17,   17,   17, 0x0a,
       51,   34,   17,   17, 0x0a,
-      91,   87,   17,   17, 0x0a,
-     116,  111,   17,   17, 0x0a,
-     139,   87,   17,   17, 0x0a,
+      96,   92,   87,   17, 0x0a,
+     121,  116,   17,   17, 0x0a,
+     144,   92,   17,   17, 0x0a,
+     175,   92,  164,   17, 0x0a,
 
        0        // eod
 };
@@ -42,8 +43,9 @@ static const uint qt_meta_data_QHBotUserManager[] = {
 static const char qt_meta_stringdata_QHBotUserManager[] = {
     "QHBotUserManager\0\0populateUsers()\0"
     "bareJid,resource\0updateUserPresence(QString,QString)\0"
-    "jid\0inviteUser(QString)\0user\0"
+    "bool\0jid\0inviteUser(QString)\0user\0"
     "removeUser(QHBotUser&)\0removeUser(QString)\0"
+    "QHBotUser*\0getUser(QString)\0"
 };
 
 void QHBotUserManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -54,9 +56,12 @@ void QHBotUserManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         switch (_id) {
         case 0: _t->populateUsers(); break;
         case 1: _t->updateUserPresence((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
-        case 2: _t->inviteUser((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 2: { bool _r = _t->inviteUser((*reinterpret_cast< QString(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         case 3: _t->removeUser((*reinterpret_cast< QHBotUser(*)>(_a[1]))); break;
         case 4: _t->removeUser((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 5: { QHBotUser* _r = _t->getUser((*reinterpret_cast< QString(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QHBotUser**>(_a[0]) = _r; }  break;
         default: ;
         }
     }
@@ -94,9 +99,9 @@ int QHBotUserManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 6;
     }
     return _id;
 }

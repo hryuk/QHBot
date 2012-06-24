@@ -21,6 +21,9 @@ public slots:
     void setNick(QString nick);
     void setJID(QString jid);
     void setPresence(QXmppPresence presence);
+    QString getNick();
+    QString getJID();
+    QXmppPresence getPresence();
 };
 
 #endif // QHBOTUSER_H

@@ -22,26 +22,44 @@ static const uint qt_meta_data_QHBotCommands[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       0,    0, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
+ // slots: signature, parameters, type, tag, flags
+      24,   20,   15,   14, 0x0a,
+      48,   20,   15,   14, 0x0a,
+      73,   20,   14,   14, 0x08,
+      99,   20,   14,   14, 0x08,
+
        0        // eod
 };
 
 static const char qt_meta_stringdata_QHBotCommands[] = {
-    "QHBotCommands\0"
+    "QHBotCommands\0\0bool\0msg\0isCommand(QXmppMessage)\0"
+    "runCommand(QXmppMessage)\0"
+    "runCmdHello(QXmppMessage)\0"
+    "runCmdInvite(QXmppMessage)\0"
 };
 
 void QHBotCommands::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    Q_UNUSED(_o);
-    Q_UNUSED(_id);
-    Q_UNUSED(_c);
-    Q_UNUSED(_a);
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        QHBotCommands *_t = static_cast<QHBotCommands *>(_o);
+        switch (_id) {
+        case 0: { bool _r = _t->isCommand((*reinterpret_cast< const QXmppMessage(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 1: { bool _r = _t->runCommand((*reinterpret_cast< const QXmppMessage(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 2: _t->runCmdHello((*reinterpret_cast< const QXmppMessage(*)>(_a[1]))); break;
+        case 3: _t->runCmdInvite((*reinterpret_cast< const QXmppMessage(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
 }
 
 const QMetaObjectExtraData QHBotCommands::staticMetaObjectExtraData = {
@@ -75,6 +93,11 @@ int QHBotCommands::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QObject::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 4)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 4;
+    }
     return _id;
 }
 QT_END_MOC_NAMESPACE

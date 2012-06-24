@@ -2,13 +2,11 @@
 
 QHBot::QHBot(QObject *parent): QXmppClient(parent)
 {
-    /*
     connect(this,SIGNAL(messageReceived(const QXmppMessage&)),SLOT(messageReceived(const QXmppMessage&)));
     connect(this,SIGNAL(needMsgBroadcast(const QXmppMessage&)),SLOT(sendMsgBroadcast(const QXmppMessage&)));
-    */
 
-    UserManager=new QHBotUserManager(&this->rosterManager(),this);
-
+    UserManager=new QHBotUserManager(&this->rosterManager());
+    Commands=new QHBotCommands(UserManager);
 }
 
 QHBot::~QHBot()
@@ -16,10 +14,10 @@ QHBot::~QHBot()
 
 }
 
-/*
+
 void QHBot::messageReceived(const QXmppMessage& message)
 {
-    QString from = message.from();
+    QString from=message.from();
     from=from.mid(0,from.indexOf('/'));
 
     QString msg = message.body();
@@ -27,7 +25,14 @@ void QHBot::messageReceived(const QXmppMessage& message)
 
     if(this->rosterManager().getRosterBareJids().contains(from))
     {
-        emit needMsgBroadcast(message);
+        if(Commands->isCommand(msg))
+        {
+            emit commandReceived(message);
+        }
+        else
+        {
+            emit needMsgBroadcast(message);
+        }
     }
 }
 
@@ -43,4 +48,4 @@ void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
         }
     }
 }
-*/
+

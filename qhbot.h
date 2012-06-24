@@ -7,6 +7,7 @@
 #include <QXmppRosterManager.h>
 
 #include "qhbotusermanager.h"
+#include "qhbotcommands.h"
 
 class QHBot : public QXmppClient
 {
@@ -18,13 +19,17 @@ public:
 
 private:
     QHBotUserManager* UserManager;
+    QHBotCommands* Commands;
 
 public slots:
-    /*void messageReceived(const QXmppMessage&);
-    void sendMsgBroadcast(const QXmppMessage&);*/
+    void messageReceived(const QXmppMessage&);
+    void sendMsgBroadcast(const QXmppMessage&);
 
 signals:
-    /*void needMsgBroadcast(const QXmppMessage&);*/
+    void needMsgBroadcast(const QXmppMessage&);
+    void textMsgReceived(const QXmppMessage&);
+    void commandReceived(const QXmppMessage&);
+
 };
 
 

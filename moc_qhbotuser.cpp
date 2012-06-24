@@ -22,7 +22,7 @@ static const uint qt_meta_data_QHBotUser[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -33,6 +33,9 @@ static const uint qt_meta_data_QHBotUser[] = {
       16,   11,   10,   10, 0x0a,
       37,   33,   10,   10, 0x0a,
       62,   53,   10,   10, 0x0a,
+      97,   10,   89,   10, 0x0a,
+     107,   10,   89,   10, 0x0a,
+     130,   10,  116,   10, 0x0a,
 
        0        // eod
 };
@@ -40,7 +43,9 @@ static const uint qt_meta_data_QHBotUser[] = {
 static const char qt_meta_stringdata_QHBotUser[] = {
     "QHBotUser\0\0nick\0setNick(QString)\0jid\0"
     "setJID(QString)\0presence\0"
-    "setPresence(QXmppPresence)\0"
+    "setPresence(QXmppPresence)\0QString\0"
+    "getNick()\0getJID()\0QXmppPresence\0"
+    "getPresence()\0"
 };
 
 void QHBotUser::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -52,6 +57,12 @@ void QHBotUser::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 0: _t->setNick((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 1: _t->setJID((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 2: _t->setPresence((*reinterpret_cast< QXmppPresence(*)>(_a[1]))); break;
+        case 3: { QString _r = _t->getNick();
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 4: { QString _r = _t->getJID();
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
+        case 5: { QXmppPresence _r = _t->getPresence();
+            if (_a[0]) *reinterpret_cast< QXmppPresence*>(_a[0]) = _r; }  break;
         default: ;
         }
     }
@@ -89,9 +100,9 @@ int QHBotUser::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 6;
     }
     return _id;
 }

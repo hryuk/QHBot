@@ -17,17 +17,19 @@ public:
     explicit QHBotUserManager(QXmppRosterManager* RosterManager,QObject *parent = 0);
 
 private:
-    QList<QHBotUser> users;
-    QList<QHBotGroup> groups;
+    QList<QHBotUser*> users;
+    QList<QHBotGroup*> groups;
+    QXmppRosterManager* RosterManager;
     
 signals:
     
 public slots:
     void populateUsers();
     void updateUserPresence(const QString &bareJid,const QString &resource);
-    void inviteUser(QString jid);
+    bool inviteUser(QString jid);
     void removeUser(QHBotUser &user);
     void removeUser(QString jid);
+    QHBotUser* getUser(QString jid);
 };
 
 #endif // QHBOTUSERMANAGER_H
