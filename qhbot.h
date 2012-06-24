@@ -17,15 +17,14 @@ public:
     ~QHBot();
 
 private:
-    QStringList users;
-    QStringList jids;
+    QHBotUserManager* UserManager;
 
 public slots:
-    void messageReceived(const QXmppMessage&);
-    void sendMsgBroadcast(const QXmppMessage&);
+    /*void messageReceived(const QXmppMessage&);
+    void sendMsgBroadcast(const QXmppMessage&);*/
 
 signals:
-    void needMsgBroadcast(const QXmppMessage&);
+    /*void needMsgBroadcast(const QXmppMessage&);*/
 };
 
 

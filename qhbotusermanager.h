@@ -2,20 +2,32 @@
 #define QHBOTUSERMANAGER_H
 
 #include <QObject>
+#include <QList>
+#include <QXmppRosterManager.h>
 
 #include "qhbotuser.h"
+#include "qhbotgroup.h"
+
+class QHBotUser;
 
 class QHBotUserManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit QHBotUserManager(QObject *parent = 0);
+    explicit QHBotUserManager(QXmppRosterManager* RosterManager,QObject *parent = 0);
+
+private:
+    QList<QHBotUser> users;
+    QList<QHBotGroup> groups;
     
 signals:
     
 public slots:
-
-    
+    void populateUsers();
+    void updateUserPresence(const QString &bareJid,const QString &resource);
+    void inviteUser(QString jid);
+    void removeUser(QHBotUser &user);
+    void removeUser(QString jid);
 };
 
 #endif // QHBOTUSERMANAGER_H

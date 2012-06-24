@@ -7,8 +7,8 @@
 QT+=core gui network xml
 
 TARGET = QHBot
-CONFIG   += console
-CONFIG   -= app_bundle
+CONFIG += console
+CONFIG -= app_bundle
 
 TEMPLATE = app
 
@@ -18,7 +18,7 @@ SOURCES += main.cpp \
     qhbotuser.cpp \
     qhbotusermanager.cpp \
     qhbotcommands.cpp \
-    qhbotdatamanager.cpp
+    qhbotgroup.cpp
 
 INCLUDEPATH += $$quote(qxmpp/include)
 LIBS += -lqxmpp
@@ -28,4 +28,4 @@ HEADERS += \
     qhbotuser.h \
     qhbotusermanager.h \
     qhbotcommands.h \
-    qhbotdatamanager.h
+    qhbotgroup.h

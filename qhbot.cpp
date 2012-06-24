@@ -2,8 +2,13 @@
 
 QHBot::QHBot(QObject *parent): QXmppClient(parent)
 {
+    /*
     connect(this,SIGNAL(messageReceived(const QXmppMessage&)),SLOT(messageReceived(const QXmppMessage&)));
     connect(this,SIGNAL(needMsgBroadcast(const QXmppMessage&)),SLOT(sendMsgBroadcast(const QXmppMessage&)));
+    */
+
+    UserManager=new QHBotUserManager(&this->rosterManager(),this);
+
 }
 
 QHBot::~QHBot()
@@ -11,6 +16,7 @@ QHBot::~QHBot()
 
 }
 
+/*
 void QHBot::messageReceived(const QXmppMessage& message)
 {
     QString from = message.from();
@@ -37,3 +43,4 @@ void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
         }
     }
 }
+*/
