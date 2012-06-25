@@ -5,17 +5,18 @@
 
 #include "qhbotuser.h"
 
+class QHBotUser;
+
 class QHBotGroup : public QObject
 {
     Q_OBJECT
 public:
-    explicit QHBotGroup(QObject *parent = 0);
+    explicit QHBotGroup(QString& name,QObject *parent = 0);
 
 private:
+	QString name;
     QList<int> privs;
     QList<QHBotUser> members;
-    
-signals:
     
 public slots:
     void grantPrivilege(int priv);

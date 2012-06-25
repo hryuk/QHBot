@@ -5,6 +5,7 @@
 #include <QList>
 #include <QXmppRosterManager.h>
 
+#include <QXmppRosterManager.h>
 #include "qhbotuser.h"
 #include "qhbotgroup.h"
 
@@ -30,6 +31,7 @@ public slots:
     void removeUser(QHBotUser &user);
     void removeUser(QString jid);
     QHBotUser* getUser(QString jid);
+    
 };
 
 #endif // QHBOTUSERMANAGER_H

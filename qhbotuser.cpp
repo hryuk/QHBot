@@ -18,15 +18,17 @@ void QHBotUser::setPresence(QXmppPresence presence)
 
 QString QHBotUser::getNick()
 {
-    return this->nick;
+    //TODO
+    return QString();
 }
 
 QString QHBotUser::getJID()
 {
-    return this->jid;
+    //TODO
+    return QString();
 }
 
 QXmppPresence QHBotUser::getPresence()
 {
-    return this->presence;
+    return this->Presence;
 }

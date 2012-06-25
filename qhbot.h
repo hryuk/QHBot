@@ -6,8 +6,8 @@
 #include <QXmppMessage.h>
 #include <QXmppRosterManager.h>
 
-#include "qhbotusermanager.h"
 #include "qhbotcommands.h"
+#include "qhbotusermanager.h"
 
 class QHBot : public QXmppClient
 {

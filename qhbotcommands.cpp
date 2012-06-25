@@ -38,5 +38,9 @@ void QHBotCommands::runCmdHello(const QXmppMessage &msg)
 
 void QHBotCommands::runCmdInvite(const QXmppMessage &msg)
 {
-    //TODO
+    //TODO: comprobar jid!!!
+    QString body=msg.body();
+    body.replace("/invite","");
+
+    UserManager->inviteUser(body);
 }
