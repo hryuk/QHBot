@@ -1,6 +1,6 @@
 #include "qhbotuser.h"
 
-QHBotUser::QHBotUser(QObject *parent): QObject(parent)
+QHBotUser::QHBotUser(QXmppRosterIq *Item, QObject *parent): QObject(parent)
 {
 
 }

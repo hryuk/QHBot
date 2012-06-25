@@ -18,9 +18,11 @@ SOURCES += main.cpp \
     qhbotuser.cpp \
     qhbotusermanager.cpp \
     qhbotcommands.cpp \
-    qhbotdatamanager.cpp
+    qhbotdatamanager.cpp \
+    qhbotgroup.cpp
 
 INCLUDEPATH += $$quote(qxmpp/include)
+INCLUDEPATH += $$quote(./)
 LIBS += -lqxmpp
 
 HEADERS += \
@@ -28,4 +30,5 @@ HEADERS += \
     qhbotuser.h \
     qhbotusermanager.h \
     qhbotcommands.h \
-    qhbotdatamanager.h
+    qhbotdatamanager.h \
+    qhbotgroup.h

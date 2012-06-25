@@ -2,7 +2,7 @@
 #include <QXmppClient.h>
 #include <QXmppLogger.h>
 
-#include "qhbot.h"
+#include <qhbot.h>
 
 void mMsgOut(QtMsgType type,const char* msg)
 {
