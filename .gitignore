@@ -30,6 +30,7 @@ Release/
 # NOTE: PROJECT is a your project's name, analog of PROJECT.exe in Linux
 *.exe
 *.dll
+QHBot
 
 # Windows-specific files
 Thumbs.db
