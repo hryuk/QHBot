@@ -38,13 +38,13 @@ void QHBot::messageReceived(const QXmppMessage& message)
 
 void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
 {
-
-    foreach(QString u,this->rosterManager().getRosterBareJids())
+    QString jidFrom=msg.from().mid(0,msg.from().indexOf('/'));
+    foreach(QHBotUser* user,UserManager->getUsers())
     {
-        if(u!=msg.from().mid(0,msg.from().indexOf('/')))
+        if(user->getJID()!=jidFrom)
         {
-            qDebug()<<"Reenviando a "+u;
-            this->sendMessage(u,msg.body());
+            qDebug()<<"Reenviando a "+user->getJID();
+            this->sendMessage(user->getJID(),jidFrom+": "+msg.body());
         }
     }
 }

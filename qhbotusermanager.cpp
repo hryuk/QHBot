@@ -9,13 +9,13 @@ QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *p
 
 void QHBotUserManager::populateUsers()
 {
-    QStringList bareJids=RosterManager->getRosterBareJids();
-    foreach(QString jid,bareJids)
+    foreach(QString jid,RosterManager->getRosterBareJids())
     {
         //FIXME: "limpiar" jid?
         QHBotUser* user=new QHBotUser();
-        user->setJID(jid);
-        user->setNick(jid);
+        QXmppRosterIq::Item item=RosterManager->getRosterEntry(jid);
+        user->setJID(item.bareJid());
+        user->setNick(item.name());
         //FIXME: tener en cuenta todos los resources?
         user->setPresence(RosterManager->getPresence(jid,RosterManager->getResources(jid).at(0)));
         this->users.append(user);
@@ -57,4 +57,9 @@ QHBotUser* QHBotUserManager::getUser(QString jid)
     }
 
     return 0;
+}
+
+QList<QHBotUser*> QHBotUserManager::getUsers()
+{
+    return this->users;
 }

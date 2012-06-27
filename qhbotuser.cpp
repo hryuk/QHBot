@@ -6,26 +6,27 @@ QHBotUser::QHBotUser(QObject *parent): QObject(parent)
 
 void QHBotUser::setNick(QString nick)
 {
+    this->nick=nick;
 }
 
 void QHBotUser::setJID(QString jid)
 {
+    this->jid=jid;
 }
 
-void QHBotUser::setPresence(QXmppPresence presence)
+void QHBotUser::setPresence(QXmppPresence Presence)
 {
+    this->Presence=Presence;
 }
 
 QString QHBotUser::getNick()
 {
-    //TODO
-    return QString();
+    return this->nick;
 }
 
 QString QHBotUser::getJID()
 {
-    //TODO
-    return QString();
+    return this->jid;
 }
 
 QXmppPresence QHBotUser::getPresence()

@@ -12,18 +12,18 @@ class QHBotUser : public QObject
     Q_OBJECT
 public:
     explicit QHBotUser(QObject *parent = 0);
-    explicit QHBotUser(QXmppRosterIq* Item,QObject *parent = 0);
 
 private:
     QXmppPresence Presence;
-    QXmppRosterIq::Item* UserData;
+    QString jid;
+    QString nick;
     
 signals:
     
 public slots:  
     void setNick(QString nick);
     void setJID(QString jid);
-    void setPresence(QXmppPresence presence);
+    void setPresence(QXmppPresence Presence);
     QString getNick();
     QString getJID();
     QXmppPresence getPresence();

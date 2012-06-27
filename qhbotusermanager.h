@@ -31,6 +31,7 @@ public slots:
     void removeUser(QHBotUser &user);
     void removeUser(QString jid);
     QHBotUser* getUser(QString jid);
+    QList<QHBotUser*> getUsers();
     
 };
 
