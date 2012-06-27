@@ -23,9 +23,11 @@ private:
     QXmppRosterManager* RosterManager;
     
 signals:
+    void sendRosterIq(QXmppRosterIq* iq);
     
 public slots:
     void populateUsers();
+    void updateNick(const QString& bareJid,const QString newNick);
     void updateUserPresence(const QString &bareJid,const QString &resource);
     bool inviteUser(QString jid);
     void removeUser(QHBotUser &user);

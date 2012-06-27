@@ -7,6 +7,7 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
 
     UserManager=new QHBotUserManager(&this->rosterManager());
     Commands=new QHBotCommands(UserManager);
+    connect(UserManager,SIGNAL(QHBotUserManager::sendRosterIq(QXmppRosterIq* iq)),this,SLOT(sendPacket(QXmppPacket*)));
 
     connect(this,SIGNAL(commandReceived(QXmppMessage&)),Commands,SLOT(runCommand(QXmppMessage&)));
 }
@@ -15,7 +16,9 @@ QHBot::~QHBot()
 {
 
 }
-
+void QHBot::sendPacket(QXmppPacket* paquete){
+    this->QXmppClient::sendPacket(*paquete);
+}
 
 void QHBot::messageReceived(const QXmppMessage& message)
 {
@@ -52,7 +55,7 @@ void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
             QString jidTo=user->getJID();
             SleeperThread sleep;
             sleep.msleep(100);
-            this->sendPacket(QXmppMessage("",jidTo,jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
+            this->QXmppClient::sendPacket(QXmppMessage("",jidTo,jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
  //           this->sendMessage(user->getJID(),jidFrom+": "+msg.body());
         }
     }

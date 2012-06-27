@@ -11,22 +11,27 @@ class QHBotUser : public QObject
 {
     Q_OBJECT
 public:
+
     explicit QHBotUser(QObject *parent = 0);
+    //No tiene sentido como slot porque solo recupera un valor
+    QXmppPresence getPresence();
+    QXmppPresence getPresence(QString resource);
 
 private:
     QXmppPresence Presence;
     QString jid;
     QString nick;
+    QMap<QString,QXmppPresence> nodos;
     
 signals:
+    void nickChange(QString jid,QString newNickName);
     
 public slots:  
     void setNick(QString nick);
     void setJID(QString jid);
-    void setPresence(QXmppPresence Presence);
+    void setPresence(QString ResourceName,QXmppPresence Presence);
     QString getNick();
     QString getJID();
-    QXmppPresence getPresence();
 
     /*
     const QString& getJID();
