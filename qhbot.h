@@ -5,6 +5,7 @@
 #include <QXmppClient.h>
 #include <QXmppMessage.h>
 #include <QXmppRosterManager.h>
+#include <QThread>
 
 #include "qhbotcommands.h"
 #include "qhbotusermanager.h"
@@ -30,6 +31,15 @@ signals:
     void textMsgReceived(const QXmppMessage&);
     void commandReceived(const QXmppMessage&);
 
+};
+
+class SleeperThread : public QThread
+{
+public:
+static void msleep(unsigned long msecs)
+{
+QThread::msleep(msecs);
+}
 };
 
 

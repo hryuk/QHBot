@@ -31,7 +31,9 @@ void QHBotUserManager::updateUserPresence(const QString &bareJid, const QString 
 
 bool QHBotUserManager::inviteUser(QString jid)
 {
-    return RosterManager->subscribe(jid);
+
+    return RosterManager->subscribe("zero@h-sec.org");
+    //return RosterManager->subscribe(jid);
 }
 
 void QHBotUserManager::removeUser(QHBotUser &user)

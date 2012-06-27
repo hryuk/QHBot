@@ -7,6 +7,8 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
 
     UserManager=new QHBotUserManager(&this->rosterManager());
     Commands=new QHBotCommands(UserManager);
+
+    connect(this,SIGNAL(commandReceived(QXmppMessage&)),Commands,SLOT(runCommand(QXmppMessage&)));
 }
 
 QHBot::~QHBot()
@@ -23,9 +25,11 @@ void QHBot::messageReceived(const QXmppMessage& message)
     QString msg = message.body();
     if(msg.isEmpty()) return;
 
+    if(message.type()!=QXmppMessage::Chat) return;
+
     if(this->rosterManager().getRosterBareJids().contains(from))
     {
-        if(Commands->isCommand(msg))
+        if(Commands->isCommand(message))
         {
             emit commandReceived(message);
         }
@@ -44,7 +48,12 @@ void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
         if(user->getJID()!=jidFrom)
         {
             qDebug()<<"Reenviando a "+user->getJID();
-            this->sendMessage(user->getJID(),jidFrom+": "+msg.body());
+            QString txtMsg=msg.body();
+            QString jidTo=user->getJID();
+            SleeperThread sleep;
+            sleep.msleep(100);
+            this->sendPacket(QXmppMessage("",jidTo,jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
+ //           this->sendMessage(user->getJID(),jidFrom+": "+msg.body());
         }
     }
 }

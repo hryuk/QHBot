@@ -8,7 +8,7 @@ QHBotCommands::QHBotCommands(QHBotUserManager* UserManager, QObject *parent): QO
 
 bool QHBotCommands::isCommand(const QXmppMessage &msg)
 {
-    if(msg.body().startsWith('/')) return true;
+    if(msg.body().startsWith("/")) return true;
     else return false;
 }
 
@@ -40,7 +40,7 @@ void QHBotCommands::runCmdInvite(const QXmppMessage &msg)
 {
     //TODO: comprobar jid!!!
     QString body=msg.body();
-    body.replace("/invite","");
+    body.replace("/invite ","");
 
     UserManager->inviteUser(body);
 }
