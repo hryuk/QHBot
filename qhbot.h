@@ -6,9 +6,20 @@
 #include <QXmppMessage.h>
 #include <QXmppRosterManager.h>
 #include <QThread>
+#include <QMutex>
 
 #include "qhbotcommands.h"
 #include "qhbotusermanager.h"
+
+/* Pequeño trick, clase solo usada para simular un sleep*/
+class SleeperThread : public QThread
+{
+public:
+    static void msleep(unsigned long msecs)
+    {
+        QThread::msleep(msecs);
+    }
+};
 
 class QHBot : public QXmppClient
 {
@@ -21,6 +32,8 @@ public:
 private:
     QHBotUserManager* UserManager;
     QHBotCommands* Commands;
+    QMutex mutex;
+    SleeperThread sleep;
 
 public slots:
     void messageReceived(const QXmppMessage&);
@@ -34,14 +47,8 @@ signals:
 
 };
 
-class SleeperThread : public QThread
-{
-public:
-static void msleep(unsigned long msecs)
-{
-QThread::msleep(msecs);
-}
-};
+
+
 
 
 

@@ -7,16 +7,18 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
 
     UserManager=new QHBotUserManager(&this->rosterManager(),this);
     Commands=new QHBotCommands(UserManager);
-    connect(UserManager,SIGNAL(QHBotUserManager::sendRosterIq(QXmppRosterIq* iq)),this,SLOT(QHBot::sendIQ(QXmppIq* iq)));
 
-    connect(this,SIGNAL(commandReceived(QXmppMessage&)),Commands,SLOT(runCommand(QXmppMessage&)));
+    connect(UserManager,SIGNAL(sendRosterIq(QXmppIq*)),this,SLOT(sendIQ(QXmppIq*)));
+    connect(this,SIGNAL(commandReceived(const QXmppMessage&)),Commands,SLOT(runCommand(const QXmppMessage&)));
 }
 
 QHBot::~QHBot()
 {
 
 }
-void QHBot::sendIQ(QXmppIq* iq){
+
+void QHBot::sendIQ(QXmppIq* iq)
+{
     iq->setTo(this->configuration().domain());
     printf("\n");
     this->QXmppClient::sendPacket(*iq);
@@ -38,8 +40,7 @@ void QHBot::messageReceived(const QXmppMessage& message)
     {
         if(Commands->isCommand(message))
         {
-            //emit commandReceived(message);
-            Commands->runCommand(message);
+            emit commandReceived(message);
         }
         else
         {
@@ -50,19 +51,20 @@ void QHBot::messageReceived(const QXmppMessage& message)
 
 void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
 {
+    QMutexLocker locker(&mutex);
+
+    sleep.msleep(100);
     QString jidFrom=msg.from().mid(0,msg.from().indexOf('/'));
     foreach(QHBotUser* user,UserManager->getUsers())
     {
         if(user->getJID()!=jidFrom)
         {
             qDebug()<<"Reenviando a "+user->getJID();
-            QString txtMsg=msg.body();
-            QString jidTo=user->getJID();
-            SleeperThread sleep;
             sleep.msleep(100);
-            this->QXmppClient::sendPacket(QXmppMessage("",jidTo,jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
- //           this->sendMessage(user->getJID(),jidFrom+": "+msg.body());
+            this->QXmppClient::sendPacket(QXmppMessage("",user->getJID(),jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
         }
     }
+
+    mutex.unlock();
 }
 

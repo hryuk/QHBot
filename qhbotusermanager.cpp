@@ -1,7 +1,7 @@
 #include "qhbotusermanager.h"
 #include "qhbot.h"
 
-QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *parent): QObject(parent)
+QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *parent): QObject()
 {
     this->RosterManager=RosterManager;
     connect(RosterManager,SIGNAL(presenceChanged(const QString&,const QString&)),this,SLOT(updateUserPresence()));
@@ -16,15 +16,18 @@ void QHBotUserManager::populateUsers()
         QXmppRosterIq::Item item=RosterManager->getRosterEntry(jid);
         QHBotUser* user=new QHBotUser(item,this);
         //Guardo la presencia de todos los usuarios
-        foreach(QString resourceName,RosterManager->getResources(jid)){
+        foreach(QString resourceName,RosterManager->getResources(jid))
+        {
             user->setPresence(resourceName,RosterManager->getPresence(jid,resourceName));
         }
-        connect(user,SIGNAL(QHBotUser::nickChange(QString&,QString&)),this,SLOT(updateNick(QString&,QString&)));
+
+        connect(user,SIGNAL(nickChange(const QString&,const QString&)),this,SLOT(updateNick(const QString&,const QString&)));
         this->users.append(user);
     }
 }
 void QHBotUserManager::updateNick(const QString& bareJid,const QString& newNick)
 {
+    qDebug()<<"Update Nick!";
     QXmppRosterIq::Item* item = new QXmppRosterIq::Item(RosterManager->getRosterEntry(bareJid));
     QXmppRosterIq* rosterSet = new QXmppRosterIq();
     item->setGroups( RosterManager->getRosterEntry(bareJid).groups());
@@ -33,9 +36,7 @@ void QHBotUserManager::updateNick(const QString& bareJid,const QString& newNick)
     rosterSet->setType(QXmppIq::Set);
     rosterSet->addItem(*item);
 
-    //emit sendRosterIq(rosterSet);
-    QHBot* bot = ((QHBot*)parent());
-    bot->sendIQ(rosterSet);
+    emit sendRosterIq(rosterSet);
 }
 
 void QHBotUserManager::updateUserPresence(const QString &bareJid, const QString &resource)
@@ -47,9 +48,7 @@ void QHBotUserManager::updateUserPresence(const QString &bareJid, const QString 
 
 bool QHBotUserManager::inviteUser(QString jid)
 {
-
-    return RosterManager->subscribe("zero@h-sec.org");
-    //return RosterManager->subscribe(jid);
+    return RosterManager->subscribe(jid);
 }
 
 void QHBotUserManager::removeUser(QHBotUser &user)

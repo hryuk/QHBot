@@ -23,7 +23,7 @@ private:
     QXmppRosterManager* RosterManager;
     
 signals:
-    void sendRosterIq(QXmppRosterIq* iq);
+    void sendRosterIq(QXmppIq* iq);
     
 public slots:
     void populateUsers();

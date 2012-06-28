@@ -3,7 +3,7 @@
 QHBotCommands::QHBotCommands(QHBotUserManager* UserManager, QObject *parent): QObject(parent)
 {
     this->UserManager=UserManager;
-    this->commands<<"hello"<<"invite"<<"setNick";
+    this->commands<<"hello"<<"invite"<<"setnick";
 }
 
 bool QHBotCommands::isCommand(const QXmppMessage &msg)
@@ -14,24 +14,25 @@ bool QHBotCommands::isCommand(const QXmppMessage &msg)
 
 bool QHBotCommands::runCommand(const QXmppMessage &msg)
 {
-    QString txtMsg=msg.body();
-    QStringList arg = txtMsg.split(" ");
+    qDebug()<<"Run command!!";
 
+    QStringList arg=msg.body().split(" ");
+    QString CommandName=arg.at(0);
+    arg.removeAt(0);
 
-    int i = 0,index = 0;
-    if(txtMsg.startsWith("/"+commands[index = i++]))
+    int i=0;
+    if(CommandName=="/"+commands[i++])
     {
-        this->runCmdHello(msg);
+        this->runCmdHello(arg);
         return true;
     }
-    else if(txtMsg.startsWith("/"+commands[index = i++]))
+    else if(CommandName=="/"+commands[i++])
     {
-        this->runCmdInvite("/"+commands[index]);
+        this->runCmdInvite(arg);
         return true;
     }
-    else if(txtMsg.startsWith("/"+commands[index = i++]))
+    else if(CommandName=="/"+commands[i++])
     {
-        arg.removeAt(0);
         this->runCmdSetNick(arg);
         return true;
     }
@@ -39,20 +40,19 @@ bool QHBotCommands::runCommand(const QXmppMessage &msg)
     return false;
 }
 
-void QHBotCommands::runCmdHello(const QXmppMessage &msg)
+void QHBotCommands::runCmdHello(const QStringList &arg)
 {
     //TODO
 }
 
-void QHBotCommands::runCmdInvite(const QXmppMessage &msg)
+void QHBotCommands::runCmdInvite(const QStringList &arg)
 {
-    //TODO: comprobar jid!!!
-    QString body=msg.body();
-    body.replace("/invite ","");
-
-    UserManager->inviteUser(body);
+    QRegExp rx("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$ ");
+    if(!rx.exactMatch(arg.at(0))) return;
+    UserManager->inviteUser(arg.at(0));
 }
-void QHBotCommands::runCmdSetNick(const QStringList &arg){
+void QHBotCommands::runCmdSetNick(const QStringList &arg)
+{
     const QString& jid = arg.at(0);
     const QString& newNick = arg.at(1);
 
