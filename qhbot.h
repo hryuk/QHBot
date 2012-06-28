@@ -25,7 +25,7 @@ private:
 public slots:
     void messageReceived(const QXmppMessage&);
     void sendMsgBroadcast(const QXmppMessage&);
-    void sendPacket(QXmppPacket*);
+    void sendIQ(QXmppIq* iq);
 
 signals:
     void needMsgBroadcast(const QXmppMessage&);

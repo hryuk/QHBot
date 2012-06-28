@@ -3,7 +3,7 @@
 QHBotCommands::QHBotCommands(QHBotUserManager* UserManager, QObject *parent): QObject(parent)
 {
     this->UserManager=UserManager;
-    this->commands<<"hello"<<"invite";
+    this->commands<<"hello"<<"invite"<<"setNick";
 }
 
 bool QHBotCommands::isCommand(const QXmppMessage &msg)
@@ -15,16 +15,24 @@ bool QHBotCommands::isCommand(const QXmppMessage &msg)
 bool QHBotCommands::runCommand(const QXmppMessage &msg)
 {
     QString txtMsg=msg.body();
+    QStringList arg = txtMsg.split(" ");
 
 
-    if(txtMsg.startsWith("/"+commands[0]))
+    int i = 0,index = 0;
+    if(txtMsg.startsWith("/"+commands[index = i++]))
     {
         this->runCmdHello(msg);
         return true;
     }
-    else if(txtMsg.startsWith("/"+commands[1]))
+    else if(txtMsg.startsWith("/"+commands[index = i++]))
     {
-        this->runCmdInvite("/"+commands[2]);
+        this->runCmdInvite("/"+commands[index]);
+        return true;
+    }
+    else if(txtMsg.startsWith("/"+commands[index = i++]))
+    {
+        arg.removeAt(0);
+        this->runCmdSetNick(arg);
         return true;
     }
 
@@ -43,4 +51,10 @@ void QHBotCommands::runCmdInvite(const QXmppMessage &msg)
     body.replace("/invite ","");
 
     UserManager->inviteUser(body);
+}
+void QHBotCommands::runCmdSetNick(const QStringList &arg){
+    const QString& jid = arg.at(0);
+    const QString& newNick = arg.at(1);
+
+    UserManager->getUser(jid)->setNick(newNick);
 }

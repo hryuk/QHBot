@@ -5,9 +5,9 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
     connect(this,SIGNAL(messageReceived(const QXmppMessage&)),SLOT(messageReceived(const QXmppMessage&)));
     connect(this,SIGNAL(needMsgBroadcast(const QXmppMessage&)),SLOT(sendMsgBroadcast(const QXmppMessage&)));
 
-    UserManager=new QHBotUserManager(&this->rosterManager());
+    UserManager=new QHBotUserManager(&this->rosterManager(),this);
     Commands=new QHBotCommands(UserManager);
-    connect(UserManager,SIGNAL(QHBotUserManager::sendRosterIq(QXmppRosterIq* iq)),this,SLOT(sendPacket(QXmppPacket*)));
+    connect(UserManager,SIGNAL(QHBotUserManager::sendRosterIq(QXmppRosterIq* iq)),this,SLOT(QHBot::sendIQ(QXmppIq* iq)));
 
     connect(this,SIGNAL(commandReceived(QXmppMessage&)),Commands,SLOT(runCommand(QXmppMessage&)));
 }
@@ -16,8 +16,12 @@ QHBot::~QHBot()
 {
 
 }
-void QHBot::sendPacket(QXmppPacket* paquete){
-    this->QXmppClient::sendPacket(*paquete);
+void QHBot::sendIQ(QXmppIq* iq){
+    iq->setTo(this->configuration().domain());
+    printf("\n");
+    this->QXmppClient::sendPacket(*iq);
+    printf("\n");
+    delete iq;
 }
 
 void QHBot::messageReceived(const QXmppMessage& message)
@@ -34,7 +38,8 @@ void QHBot::messageReceived(const QXmppMessage& message)
     {
         if(Commands->isCommand(message))
         {
-            emit commandReceived(message);
+            //emit commandReceived(message);
+            Commands->runCommand(message);
         }
         else
         {

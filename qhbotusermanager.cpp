@@ -1,4 +1,5 @@
 #include "qhbotusermanager.h"
+#include "qhbot.h"
 
 QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *parent): QObject(parent)
 {
@@ -12,26 +13,29 @@ void QHBotUserManager::populateUsers()
     foreach(QString jid,RosterManager->getRosterBareJids())
     {
         //FIXME: "limpiar" jid?
-        QHBotUser* user=new QHBotUser();
         QXmppRosterIq::Item item=RosterManager->getRosterEntry(jid);
-        user->setJID(item.bareJid());
-        user->setNick(item.name());
+        QHBotUser* user=new QHBotUser(item,this);
         //Guardo la presencia de todos los usuarios
         foreach(QString resourceName,RosterManager->getResources(jid)){
             user->setPresence(resourceName,RosterManager->getPresence(jid,resourceName));
         }
-        connect(user,SIGNAL(QHBotUser::nickChange(QString,QString)),this,SLOT(updateNick(const QString& bareJid,const QString newNick)));
+        connect(user,SIGNAL(QHBotUser::nickChange(QString&,QString&)),this,SLOT(updateNick(QString&,QString&)));
         this->users.append(user);
     }
 }
-void QHBotUserManager::updateNick(const QString& bareJid,const QString newNick){
+void QHBotUserManager::updateNick(const QString& bareJid,const QString& newNick)
+{
     QXmppRosterIq::Item* item = new QXmppRosterIq::Item(RosterManager->getRosterEntry(bareJid));
     QXmppRosterIq* rosterSet = new QXmppRosterIq();
+    item->setGroups( RosterManager->getRosterEntry(bareJid).groups());
     item->setName(newNick);
+    //item->setSubscriptionType(QXmppRosterIq::Item::Remove);
     rosterSet->setType(QXmppIq::Set);
     rosterSet->addItem(*item);
 
-    emit sendRosterIq(rosterSet);
+    //emit sendRosterIq(rosterSet);
+    QHBot* bot = ((QHBot*)parent());
+    bot->sendIQ(rosterSet);
 }
 
 void QHBotUserManager::updateUserPresence(const QString &bareJid, const QString &resource)

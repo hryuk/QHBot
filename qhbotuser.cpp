@@ -1,13 +1,20 @@
 #include "qhbotuser.h"
+#include "qhbotusermanager.h"
 
 QHBotUser::QHBotUser(QObject *parent): QObject(parent)
 {
 }
+QHBotUser::QHBotUser(const QXmppRosterIq::Item &item, QObject *parent): QObject(parent){
+    this->jid = item.bareJid();
+    this->nick = item.name();
+}
 
-void QHBotUser::setNick(QString nick)
+void QHBotUser::setNick(QString newNick)
 {
-    this->nick=nick;
-    emit nickChange(this->jid,this->nick);
+    this->nick=newNick;
+    //emit nickChange(this->jid,this->nick);
+    QHBotUserManager* manager = ((QHBotUserManager*)parent());
+    manager->updateNick(this->jid,this->nick);
 }
 
 void QHBotUser::setJID(QString jid)
