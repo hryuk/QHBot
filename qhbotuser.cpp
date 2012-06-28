@@ -32,7 +32,6 @@ void QHBotUser::setPresence(QString ResourceName,QXmppPresence Presence)
     }else{
         nodos.insert(ResourceName,Presence);
     }
-    this->Presence=Presence;
 }
 
 QString QHBotUser::getNick()
@@ -44,11 +43,21 @@ QString QHBotUser::getJID()
 {
     return this->jid;
 }
-QXmppPresence QHBotUser::getPresence()
+QMap<QString, QXmppPresence> QHBotUser::getPresence()
 {
-    return this->Presence;
+    return nodos;
 }
 QXmppPresence QHBotUser::getPresence(QString resource)
 {
     return nodos.value(resource);
+}
+bool QHBotUser::isAvalible(){
+    bool avalible = false;
+    foreach(QXmppPresence presence,nodos.values()){
+        if(presence.type() == QXmppPresence::Available){
+            avalible = true;
+            break;
+        }
+    }
+    return avalible;
 }

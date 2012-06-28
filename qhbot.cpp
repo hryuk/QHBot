@@ -57,12 +57,16 @@ void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
     QString jidFrom=msg.from().mid(0,msg.from().indexOf('/'));
     foreach(QHBotUser* user,UserManager->getUsers())
     {
-        if(user->getJID()!=jidFrom)
+        if(user->isAvalible())
         {
-            qDebug()<<"Reenviando a "+user->getJID();
-            sleep.msleep(100);
-            this->QXmppClient::sendPacket(QXmppMessage("",user->getJID(),jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
+            if(user->getJID()!=jidFrom)
+            {
+                qDebug()<<"Reenviando a "+user->getJID();
+                sleep.msleep(100);
+                this->QXmppClient::sendPacket(QXmppMessage("",user->getJID(),jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
+            }
         }
+
     }
 }
 
