@@ -63,7 +63,7 @@ void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
             {
                 qDebug()<<"Reenviando a "+user->getJID();
                 sleep.msleep(100);
-                this->QXmppClient::sendPacket(QXmppMessage("",user->getJID(),jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
+                this->QXmppClient::sendPacket(QXmppMessage("",user->getJID()+(user->isAvalible(user->getLastResourceUsed())?user->getLastResourceUsed():""),jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
             }
         }
 

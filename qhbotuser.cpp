@@ -61,3 +61,13 @@ bool QHBotUser::isAvalible(){
     }
     return avalible;
 }
+bool QHBotUser::isAvalible(QString resourceName){
+    return nodos.contains(resourceName)?(nodos.value(resourceName).type() == QXmppPresence::Available):false;
+}
+
+QString QHBotUser::getLastResourceUsed(){
+    return lastResourceUsed;
+}
+void QHBotUser::setLastResourceUsed(QString resourceName){
+    lastResourceUsed = resourceName;
+}
