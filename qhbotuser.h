@@ -15,19 +15,23 @@ public:
     explicit QHBotUser(QObject *parent = 0);
     QHBotUser(const QXmppRosterIq::Item &item, QObject* parent = 0);
     //No tiene sentido como slot porque solo recupera un valor
-    QXmppPresence getPresence();
+    QMap<QString,QXmppPresence> getPresence();
     QXmppPresence getPresence(QString resource);
+    QString getLastResourceUsed();
+    bool isAvalible();
+    bool isAvalible(QString resourceName);
 
 private:
-    QXmppPresence Presence;
     QString jid;
     QString nick;
+    QString lastResourceUsed;
     QMap<QString,QXmppPresence> nodos;
     
 signals:
     void nickChange(const QString& jid,const QString& newNickName);
     
-public slots:  
+public slots:
+    void setLastResourceUsed(QString resourceName);
     void setNick(QString newNick);
     void setJID(QString jid);
     void setPresence(QString ResourceName,QXmppPresence Presence);
