@@ -64,7 +64,5 @@ void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
             this->QXmppClient::sendPacket(QXmppMessage("",user->getJID(),jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
         }
     }
-
-    mutex.unlock();
 }
 
