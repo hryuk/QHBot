@@ -34,6 +34,7 @@ public slots:
     void populateUsers();
     void updateNick(const QString& bareJid,const QString& newNick);
     void updateUserPresence(const QString &bareJid,const QString &resource);
+    void updateUserList(const QString& bareJid);
     bool inviteUser(QString jid);
     void removeUser(QHBotUser &user);
     void removeUser(QString jid);

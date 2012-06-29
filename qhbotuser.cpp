@@ -24,6 +24,9 @@ void QHBotUser::setJID(QString jid)
 {
     this->jid=jid;
 }
+void QHBotUser::update(QXmppRosterIq::Item item){
+
+}
 
 void QHBotUser::setPresence(QString ResourceName,QXmppPresence Presence)
 {

@@ -26,6 +26,7 @@ private:
     QString nick;
     QString lastResourceUsed;
     QMap<QString,QXmppPresence> nodos;
+    //QList<QHBotGroup> groups;
     
 signals:
     void nickChange(const QString& jid,const QString& newNickName);
@@ -34,6 +35,7 @@ public slots:
     void setLastResourceUsed(QString resourceName);
     void setNick(QString newNick);
     void setJID(QString jid);
+    void update(QXmppRosterIq::Item item);
     void setPresence(QString ResourceName,QXmppPresence Presence);
     QString getNick();
     QString getJID();
