@@ -38,13 +38,13 @@ private:
 public slots:
     void messageReceived(const QXmppMessage&);
     void sendMsgBroadcast(const QXmppMessage&);
+    void sendMsg(QString jid,QString  msg);
     void sendIQ(QXmppIq* iq);
 
 signals:
     void needMsgBroadcast(const QXmppMessage&);
     void textMsgReceived(const QXmppMessage&);
     void commandReceived(const QXmppMessage&);
-
 };
 
 

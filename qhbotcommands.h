@@ -17,6 +17,7 @@ private:
     QHBotUserManager* UserManager;
     QStringList commands;
 signals:
+    void cmdRequest(QString jid,QString msg);
 
     
 public slots:
@@ -24,10 +25,10 @@ public slots:
     bool runCommand(const QXmppMessage& msg);
 
 private slots:
-    void runCmdHello(const QStringList &arg);
-    void runCmdInvite(const QStringList &arg);
+    void runCmdHello(const QStringList &arg,const QString& from);
+    void runCmdInvite(const QStringList &arg,const QString& from);
     // /setNick <jid> <newNick>
-    void runCmdSetNick(const QStringList &arg);
+    void runCmdSetNick(const QStringList &arg,const QString& from);
     
 };
 
