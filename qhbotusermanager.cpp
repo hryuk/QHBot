@@ -29,16 +29,7 @@ void QHBotUserManager::populateUsers()
 }
 void QHBotUserManager::updateNick(const QString& bareJid,const QString& newNick)
 {
-    qDebug()<<"Update Nick!";/*
-    QXmppRosterIq::Item* item = new QXmppRosterIq::Item(RosterManager->getRosterEntry(bareJid));
-    QXmppRosterIq* rosterSet = new QXmppRosterIq();
-    item->setGroups( RosterManager->getRosterEntry(bareJid).groups());
-    item->setName(newNick);
-    //item->setSubscriptionType(QXmppRosterIq::Item::Remove);
-    rosterSet->setType(QXmppIq::Set);
-    rosterSet->addItem(*item);*/
-
-    //emit sendRosterIq(rosterSet);
+    //qDebug()<<"Update Nick!";
     RosterManager->renameItem(bareJid,newNick);
 }
 
@@ -82,4 +73,27 @@ QHBotUser* QHBotUserManager::getUser(QString jid)
 QList<QHBotUser*> QHBotUserManager::getUsers()
 {
     return this->users;
+}
+QHBotGroup* QHBotUserManager::getGroup(QString name){
+    foreach(QHBotGroup* group,this->groups)
+    {
+        /*if(group->getName()==name)
+        {
+            return group;
+        }*/
+    }
+
+    return 0;
+}
+
+QList<QHBotGroup*> QHBotUserManager::getGroups(){
+    return QList<QHBotGroup*>();
+}
+
+void QHBotUserManager::addGroup(QHBotGroup& grupo){
+
+}
+
+void QHBotUserManager::removeGroup(QString name){
+
 }

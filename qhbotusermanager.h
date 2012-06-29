@@ -16,6 +16,11 @@ class QHBotUserManager : public QObject
     Q_OBJECT
 public:
     explicit QHBotUserManager(QXmppRosterManager* RosterManager,QObject *parent = 0);
+    QHBotUser* getUser(QString jid);
+    QList<QHBotUser*> getUsers();
+    QHBotGroup* getGroup(QString name);
+    QList<QHBotGroup*> getGroups();
+
 
 private:
     QList<QHBotUser*> users;
@@ -32,8 +37,8 @@ public slots:
     bool inviteUser(QString jid);
     void removeUser(QHBotUser &user);
     void removeUser(QString jid);
-    QHBotUser* getUser(QString jid);
-    QList<QHBotUser*> getUsers();
+    void addGroup(QHBotGroup& grupo);
+    void removeGroup(QString name);
     
 };
 

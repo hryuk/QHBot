@@ -12,6 +12,7 @@ class QHBotGroup : public QObject
     Q_OBJECT
 public:
     explicit QHBotGroup(QString& name,QObject *parent = 0);
+    QString getName();
 
 private:
 	QString name;

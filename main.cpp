@@ -33,6 +33,7 @@ int main(int argc,char* argv[])
 
     QHBot bot;
     bot.connectToServer("qhsecbot@gmail.com","hsecbot1234");
+    bot.configuration().setAutoAcceptSubscriptions(true);
     //bot.connectToServer("admin@arkangelhack.es","admin");
     //bot.configuration().setStreamSecurityMode(QXmppConfiguration::TLSDisabled);
 
