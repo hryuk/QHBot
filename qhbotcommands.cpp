@@ -48,9 +48,9 @@ void QHBotCommands::runCmdHello(const QStringList &arg, const QString &from)
 
 void QHBotCommands::runCmdInvite(const QStringList &arg, const QString &from)
 {
-    //La expresion regular no funciona bien
-    QRegExp rx("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$ ");
-    //if(!rx.exactMatch(arg.at(0))) return;
+    QRegExp rx("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$");
+    rx.setCaseSensitivity(Qt::CaseInsensitive);
+    if(!rx.exactMatch(arg.at(0))) return;
     UserManager->inviteUser(arg.at(0));
 }
 void QHBotCommands::runCmdSetNick(const QStringList &arg, const QString &from)

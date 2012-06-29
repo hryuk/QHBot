@@ -32,7 +32,15 @@ int main(int argc,char* argv[])
     QXmppLogger::getLogger()->setLoggingType(QXmppLogger::StdoutLogging);
 
     QHBot bot;
-    bot.connectToServer("qhsecbot@gmail.com","hsecbot1234");
+
+    QXmppConfiguration config;
+    config.setHost("talk.l.google.com");
+    config.setDomain("h-sec.org");
+    config.setUser("bot");
+    config.setPassword("qhbot1234");
+    config.setPort(5222);
+    bot.connectToServer(config);
+
     //bot.connectToServer("admin@arkangelhack.es","admin");
     //bot.configuration().setStreamSecurityMode(QXmppConfiguration::TLSDisabled);
 
