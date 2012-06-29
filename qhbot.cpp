@@ -8,6 +8,7 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
     UserManager=new QHBotUserManager(&this->rosterManager(),this);
     Commands=new QHBotCommands(UserManager);
 
+    connect(Commands,SIGNAL(cmdRequest(QString,QString)),this,SLOT(sendMsg(QString,QString)));
     connect(UserManager,SIGNAL(sendRosterIq(QXmppIq*)),this,SLOT(sendIQ(QXmppIq*)));
     connect(this,SIGNAL(commandReceived(const QXmppMessage&)),Commands,SLOT(runCommand(const QXmppMessage&)));
 }
@@ -49,7 +50,9 @@ void QHBot::messageReceived(const QXmppMessage& message)
         }
     }
 }
-
+void QHBot::sendMsg(QString jid,QString  msg){
+    this->QXmppClient::sendPacket(QXmppMessage("",jid,msg,""));
+}
 void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
 {
     QMutexLocker locker(&mutex);

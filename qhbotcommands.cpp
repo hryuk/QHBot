@@ -18,44 +18,47 @@ bool QHBotCommands::runCommand(const QXmppMessage &msg)
 
     QStringList arg=msg.body().split(" ");
     QString CommandName=arg.at(0);
+    QString from = msg.from();
     arg.removeAt(0);
 
     int i=0;
     if(CommandName=="/"+commands[i++])
     {
-        this->runCmdHello(arg);
+        this->runCmdHello(arg,from);
         return true;
     }
     else if(CommandName=="/"+commands[i++])
     {
-        this->runCmdInvite(arg);
+        this->runCmdInvite(arg,from);
         return true;
     }
     else if(CommandName=="/"+commands[i++])
     {
-        this->runCmdSetNick(arg);
+        this->runCmdSetNick(arg,from);
         return true;
     }
 
     return false;
 }
 
-void QHBotCommands::runCmdHello(const QStringList &arg)
+void QHBotCommands::runCmdHello(const QStringList &arg, const QString &from)
 {
     //TODO
 }
 
-void QHBotCommands::runCmdInvite(const QStringList &arg)
+void QHBotCommands::runCmdInvite(const QStringList &arg, const QString &from)
 {
     //La expresion regular no funciona bien
     QRegExp rx("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$ ");
     //if(!rx.exactMatch(arg.at(0))) return;
     UserManager->inviteUser(arg.at(0));
 }
-void QHBotCommands::runCmdSetNick(const QStringList &arg)
+void QHBotCommands::runCmdSetNick(const QStringList &arg, const QString &from)
 {
     const QString& jid = arg.at(0);
     const QString& newNick = arg.at(1);
 
     UserManager->getUser(jid)->setNick(newNick);
+    emit cmdRequest(from,"H-SEC BOT\n"+jid+" es ahora conocido como: "+newNick);
+
 }
