@@ -8,6 +8,7 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
     UserManager=new QHBotUserManager(&this->rosterManager(),this);
     Commands=new QHBotCommands(UserManager);
 
+    connect(Commands,SIGNAL(cmdRequest(QString,QString)),this,SLOT(sendMsg(QString,QString)));
     connect(UserManager,SIGNAL(sendRosterIq(QXmppIq*)),this,SLOT(sendIQ(QXmppIq*)));
     connect(this,SIGNAL(commandReceived(const QXmppMessage&)),Commands,SLOT(runCommand(const QXmppMessage&)));
 }
@@ -38,6 +39,7 @@ void QHBot::messageReceived(const QXmppMessage& message)
 
     if(this->rosterManager().getRosterBareJids().contains(from))
     {
+        //qDebug()<<"msg de: "+from;
         if(Commands->isCommand(message))
         {
             emit commandReceived(message);
@@ -48,13 +50,16 @@ void QHBot::messageReceived(const QXmppMessage& message)
         }
     }
 }
-
+void QHBot::sendMsg(QString jid,QString  msg){
+    this->QXmppClient::sendPacket(QXmppMessage("",jid,msg,""));
+}
 void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
 {
     QMutexLocker locker(&mutex);
 
     sleep.msleep(100);
     QString jidFrom=msg.from().mid(0,msg.from().indexOf('/'));
+    QHBotUser* userFrom = UserManager->getUser(jidFrom);
     foreach(QHBotUser* user,UserManager->getUsers())
     {
         if(user->isAvalible())
@@ -63,7 +68,8 @@ void QHBot::sendMsgBroadcast(const QXmppMessage &msg)
             {
                 qDebug()<<"Reenviando a "+user->getJID();
                 sleep.msleep(100);
-                this->QXmppClient::sendPacket(QXmppMessage("",user->getJID()+(user->isAvalible(user->getLastResourceUsed())?user->getLastResourceUsed():""),jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
+                //this->QXmppClient::sendPacket(QXmppMessage("",user->getJID()+(user->isAvalible(user->getLastResourceUsed())?user->getLastResourceUsed():""),jidFrom.mid(0,jidFrom.indexOf("@"))+": "+msg.body()));
+                this->QXmppClient::sendPacket(QXmppMessage("",user->getJID()+(user->isAvalible(user->getLastResourceUsed())?user->getLastResourceUsed():""),userFrom->getNick()+": "+msg.body()));
             }
         }
 

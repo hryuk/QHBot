@@ -4,7 +4,7 @@
 QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *parent): QObject()
 {
     this->RosterManager=RosterManager;
-    connect(RosterManager,SIGNAL(presenceChanged(const QString&,const QString&)),this,SLOT(updateUserPresence()));
+    connect(RosterManager,SIGNAL(presenceChanged(const QString&,const QString&)),this,SLOT(updateUserPresence(const QString&,const QString&)));
     connect(RosterManager,SIGNAL(rosterReceived ()),this,SLOT(populateUsers()));
 }
 
@@ -15,11 +15,13 @@ void QHBotUserManager::populateUsers()
         //FIXME: "limpiar" jid?
         QXmppRosterIq::Item item=RosterManager->getRosterEntry(jid);
         QHBotUser* user=new QHBotUser(item,this);
+        //Aqui se rellena la lista de usuarios, no se recivio todavia la presencia de los usuarios
+        /*
         //Guardo la presencia de todos los usuarios
         foreach(QString resourceName,RosterManager->getResources(jid))
         {
             user->setPresence(resourceName,RosterManager->getPresence(jid,resourceName));
-        }
+        }*/
 
         connect(user,SIGNAL(nickChange(const QString&,const QString&)),this,SLOT(updateNick(const QString&,const QString&)));
         this->users.append(user);
@@ -27,16 +29,17 @@ void QHBotUserManager::populateUsers()
 }
 void QHBotUserManager::updateNick(const QString& bareJid,const QString& newNick)
 {
-    qDebug()<<"Update Nick!";
+    qDebug()<<"Update Nick!";/*
     QXmppRosterIq::Item* item = new QXmppRosterIq::Item(RosterManager->getRosterEntry(bareJid));
     QXmppRosterIq* rosterSet = new QXmppRosterIq();
     item->setGroups( RosterManager->getRosterEntry(bareJid).groups());
     item->setName(newNick);
     //item->setSubscriptionType(QXmppRosterIq::Item::Remove);
     rosterSet->setType(QXmppIq::Set);
-    rosterSet->addItem(*item);
+    rosterSet->addItem(*item);*/
 
-    emit sendRosterIq(rosterSet);
+    //emit sendRosterIq(rosterSet);
+    RosterManager->renameItem(bareJid,newNick);
 }
 
 void QHBotUserManager::updateUserPresence(const QString &bareJid, const QString &resource)
