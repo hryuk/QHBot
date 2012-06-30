@@ -40,3 +40,6 @@ desktop.ini
 
 # Editors temporary files 
 *~
+
+#Configuration file
+QHBot.ini
