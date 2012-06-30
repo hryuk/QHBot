@@ -6,6 +6,10 @@ QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *p
     this->RosterManager=RosterManager;
     connect(RosterManager,SIGNAL(presenceChanged(const QString&,const QString&)),this,SLOT(updateUserPresence(const QString&,const QString&)));
     connect(RosterManager,SIGNAL(rosterReceived ()),this,SLOT(populateUsers()));
+    //Roster update y push
+    connect(RosterManager,SIGNAL(itemAdded(const QString&)),this,SLOT(updateUserList(const QString&)));
+    connect(RosterManager,SIGNAL(itemChanged(const QString&)),this,SLOT(updateUserList(const QString&)));
+    connect(RosterManager,SIGNAL(itemRemoved(const QString&)),this,SLOT(updateUserList(const QString&)));
 }
 
 void QHBotUserManager::populateUsers()
@@ -27,18 +31,33 @@ void QHBotUserManager::populateUsers()
         this->users.append(user);
     }
 }
+void QHBotUserManager::updateUserList(const QString &bareJid){
+    QHBotUser* user;
+    //Si esta lo modificamos
+    if((user = getUser(bareJid))){
+        QXmppRosterIq::Item item = RosterManager->getRosterEntry(bareJid);
+        //Si esta vacio, modificamos el roster, boramos el roster
+        if(item.bareJid() == ""){
+            users.removeOne(user);
+            delete user;
+        }
+        else //Modificamos el user
+        {
+
+        }
+    }
+    else //Si no esta lo añadimos
+    {
+        //Creo un nuevo usuario
+        user = new QHBotUser(RosterManager->getRosterEntry(bareJid),this);
+        connect(user,SIGNAL(nickChange(const QString&,const QString&)),this,SLOT(updateNick(const QString&,const QString&)));
+        this->users.append(user);
+    }
+}
+
 void QHBotUserManager::updateNick(const QString& bareJid,const QString& newNick)
 {
-    qDebug()<<"Update Nick!";/*
-    QXmppRosterIq::Item* item = new QXmppRosterIq::Item(RosterManager->getRosterEntry(bareJid));
-    QXmppRosterIq* rosterSet = new QXmppRosterIq();
-    item->setGroups( RosterManager->getRosterEntry(bareJid).groups());
-    item->setName(newNick);
-    //item->setSubscriptionType(QXmppRosterIq::Item::Remove);
-    rosterSet->setType(QXmppIq::Set);
-    rosterSet->addItem(*item);*/
-
-    //emit sendRosterIq(rosterSet);
+    //qDebug()<<"Update Nick!";
     RosterManager->renameItem(bareJid,newNick);
 }
 
@@ -82,4 +101,27 @@ QHBotUser* QHBotUserManager::getUser(QString jid)
 QList<QHBotUser*> QHBotUserManager::getUsers()
 {
     return this->users;
+}
+QHBotGroup* QHBotUserManager::getGroup(QString name){
+    foreach(QHBotGroup* group,this->groups)
+    {
+        /*if(group->getName()==name)
+        {
+            return group;
+        }*/
+    }
+
+    return 0;
+}
+
+QList<QHBotGroup*> QHBotUserManager::getGroups(){
+    return QList<QHBotGroup*>();
+}
+
+void QHBotUserManager::addGroup(QHBotGroup& grupo){
+
+}
+
+void QHBotUserManager::removeGroup(QString name){
+
 }
