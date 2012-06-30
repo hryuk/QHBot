@@ -17,7 +17,7 @@ private:
     QHBotUserManager* UserManager;
     QStringList commands;
 signals:
-    void cmdRequest(QString jid,QString msg);
+    void messageRequest(QString jid,QString msg);
 
     
 public slots:

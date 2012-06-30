@@ -11,8 +11,8 @@
 #include "qhbotcommands.h"
 #include "qhbotusermanager.h"
 
-/* Pequeño trick, clase solo usada para simular un sleep*/
-class SleeperThread : public QThread
+/* PequeÃ±o trick, clase solo usada para simular un sleep*/
+class SleepingThread : public QThread
 {
 public:
     static void msleep(unsigned long msecs)
@@ -33,7 +33,7 @@ private:
     QHBotUserManager* UserManager;
     QHBotCommands* Commands;
     QMutex mutex;
-    SleeperThread sleep;
+    SleepingThread sleep;
 
 public slots:
     void messageReceived(const QXmppMessage&);
