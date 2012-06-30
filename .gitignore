@@ -43,3 +43,6 @@ desktop.ini
 
 #Configuration file
 QHBot.ini
+
+#Makefile
+Makefile*
