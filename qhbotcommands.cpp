@@ -59,6 +59,6 @@ void QHBotCommands::runCmdSetNick(const QStringList &arg, const QString &from)
     const QString& newNick = arg.at(1);
 
     UserManager->getUser(jid)->setNick(newNick);
-    emit cmdRequest(from,"H-SEC BOT\n"+jid+" es ahora conocido como: "+newNick);
+    emit messageRequest(from,"H-SEC BOT\n"+jid+" es ahora conocido como: "+newNick);
 
 }

@@ -46,7 +46,7 @@ void QHBotUserManager::updateUserList(const QString &bareJid){
 
         }
     }
-    else //Si no esta lo añadimos
+    else //Si no esta lo aÃ±adimos
     {
         //Creo un nuevo usuario
         user = new QHBotUser(RosterManager->getRosterEntry(bareJid),this);
