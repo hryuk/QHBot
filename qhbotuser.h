@@ -18,14 +18,17 @@ public:
     QMap<QString,QXmppPresence> getPresence();
     QXmppPresence getPresence(QString resource);
     QString getLastResourceUsed();
-    bool isAvalible();
-    bool isAvalible(QString resourceName);
+    bool isAvailable();
+    bool isAvailable(QString resourceName);
+    bool isSnoozing();
+    void setSnooze(bool);//Snoozing para los usuarios.
 
 private:
     QString jid;
     QString nick;
     QString lastResourceUsed;
     QMap<QString,QXmppPresence> nodos;
+    bool Snooze;
     //QList<QHBotGroup> groups;
     
 signals:

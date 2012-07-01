@@ -55,20 +55,20 @@ QXmppPresence QHBotUser::getPresence(QString resource)
     return nodos.value(resource);
 }
 
-bool QHBotUser::isAvalible(){
-    bool avalible = false;
+bool QHBotUser::isAvailable(){
+    bool available = false;
     foreach(QXmppPresence presence,nodos.values())
     {
         if(presence.type() == QXmppPresence::Available)
         {
-            avalible = true;
+            available = true;
             break;
         }
     }
-    return avalible;
+    return available;
 }
 
-bool QHBotUser::isAvalible(QString resourceName)
+bool QHBotUser::isAvailable(QString resourceName)
 {
     return nodos.contains(resourceName)?(nodos.value(resourceName).type() == QXmppPresence::Available):false;
 }
@@ -76,4 +76,14 @@ bool QHBotUser::isAvalible(QString resourceName)
 void QHBotUser::setLastResourceUsed(QString resourceName)
 {
     lastResourceUsed = resourceName;
+}
+
+void QHBotUser::setSnooze(bool status)
+{
+    this->Snooze = status;
+}
+
+bool QHBotUser::isSnoozing()
+{
+    return this->Snooze;
 }
