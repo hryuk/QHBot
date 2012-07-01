@@ -62,10 +62,12 @@ public slots:
     void sendBroadcast(const QXmppMessage&);
 
     /**
-      \brief Envía un mensaje a un único usuario por su jid. Responde a la señal
-      QHBotCommands::messageRequest(QString, QString).
+      \brief Envía un mensaje a un único usuario por su jid o emite una señal de broadcast
+      si el campo QXmppMessage.To()="broadcast"
+      QHBotCommands::messageRequest(const QXmppMessage &msg).
       **/
-    void sendMessage(QString jid,QString  msg);
+    void sendMessage(const QXmppMessage &msg);
+
     //void sendRosterIq(QXmppIq* iq);
 
 signals:
@@ -75,8 +77,6 @@ signals:
       **/
     void requestBroadcast(const QXmppMessage&);
 
-    void textMsgReceived(const QXmppMessage&); /* Consulta: Antes se usaba esta en lugar de requestBroadcast()
-                                                  Deprecated ?? */
     /**
       \brief Esta señal es emitida cada vez que un mensaje recibido es identificado como un comando
       reconocido por el bot que necesita ser ejecutado.

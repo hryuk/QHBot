@@ -19,9 +19,9 @@ private:
 signals:
     /**
       \brief Esta señal es emitida siempre que un comando necesite enviar un mensaje de
-      texto a un usuario.
+      texto a un usuario. Si Broadcast es
       **/
-    void messageRequest(QString jid,QString msg);
+    void messageRequest(const QXmppMessage& msg);
     
 public slots:
     /**
@@ -34,7 +34,7 @@ public slots:
     /**
       \brief Ejecuta el comando contenido en el mensaje msg. Responde a la señal QHBot::commandReceived().
       **/
-    bool runCommand(const QXmppMessage& msg);
+    void runCommand(const QXmppMessage& msg);
 
 private slots:
     void runCmdHello(const QStringList &arg,const QString& from);

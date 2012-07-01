@@ -8,7 +8,7 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
     UserManager=new QHBotUserManager(&this->rosterManager());
     Commands=new QHBotCommands(UserManager);
 
-    connect(Commands,SIGNAL(messageRequest(QString,QString)),this,SLOT(sendMessage(QString,QString)));
+    connect(Commands,SIGNAL(messageRequest(const QXmppMessage&)),this,SLOT(sendMessage(const QXmppMessage&)));
     connect(this,SIGNAL(commandReceived(const QXmppMessage&)),Commands,SLOT(runCommand(const QXmppMessage&)));
 
     /*
@@ -65,9 +65,19 @@ void QHBot::messageReceived(const QXmppMessage& message)
     }
 }
 
-void QHBot::sendMessage(QString jid,QString  msg)
+void QHBot::sendMessage(const QXmppMessage &msg)
 {
-    sendPacket(QXmppMessage("",jid,msg,""));
+    if(msg.to()=="broadcast")
+    {
+        qDebug()<<"Es necesario emitir mensaje difusión";
+        emit requestBroadcast(msg);
+    }
+    else
+    {
+        qDebug()<<"Enviando mensaje";
+        msg.body()="[QHBot]: "+msg.body();
+        sendPacket(msg);
+    }
 }
 
 void QHBot::sendBroadcast(const QXmppMessage &msg)
@@ -78,14 +88,26 @@ void QHBot::sendBroadcast(const QXmppMessage &msg)
     /* Delay entre mensaje y mensaje */
     sleep.msleep(100);
 
-    /* Obtenemos el usuario remitente */
-    QHBotUser* UserFrom = UserManager->getUser(msg.from().mid(0,msg.from().indexOf('/')));
+    /* Obtenemos Nick y Jid del usuario remitente */
+    QString JidFrom;
+    QString NickFrom;
+    if(msg.from()=="bot@h-sec.org")
+    {
+        JidFrom="bot@h-sec.org";
+        NickFrom="[QHBot]";
+    }
+    else
+    {
+        QHBotUser* UserFrom=UserManager->getUser(msg.from().mid(0,msg.from().indexOf('/')));
+        JidFrom=UserFrom->getJID();
+        NickFrom=UserFrom->getNick();
+    }
 
     /* Recorremos la lista de usuarios*/
     foreach(QHBotUser* UserTo,UserManager->getUsers())
     {
         /* Para reenviar, usuario tiene que estar conectado y no ser el remitente */
-        if(UserTo->isAvalible() && UserTo->getJID()!=UserFrom->getJID())
+        if(UserTo->isAvalible() && UserTo->getJID()!=JidFrom)
         {
             qDebug()<<"Reenviando a "+UserTo->getJID();
 
@@ -93,7 +115,7 @@ void QHBot::sendBroadcast(const QXmppMessage &msg)
             sleep.msleep(100);
 
             /* Reenviamos el mensaje al usuario */
-            sendPacket(QXmppMessage("",UserTo->getJID(),UserFrom->getNick()+": "+msg.body()));
+            sendPacket(QXmppMessage("",UserTo->getJID(),NickFrom+": "+msg.body()));
         }
     }
 }
