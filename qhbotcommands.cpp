@@ -17,9 +17,10 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
     qDebug()<<"Run command!!";
 
     QStringList arg=msg.body().split(" ");
-    //QString CommandName=arg.at(0);
-    QString CommandName = arg.at(0).remove(0,1);
+    QString CommandName = arg.at(0);
     QString from = msg.from();
+    CommandName.remove("/");
+
     arg.removeAt(0);
 
     switch(commands.indexOf(CommandName,0))
@@ -43,31 +44,6 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
         this->runCmdSetNick(arg,from);
         break;
     }
-
-/*
-    int i=0;
-    if(CommandName=="/"+commands[i++])
-    {
-        qDebug()<< "Ejecutando commando "+CommandName;
-        this->runCmdHello(arg,from);
-        return;
-    }
-    else if(CommandName=="/"+commands[i++])
-    {
-        qDebug()<< "Ejecutando commando "+CommandName;
-        this->runCmdInvite(arg,from);
-        return;
-    }
-    else if(CommandName=="/"+commands[i++])
-    {
-        qDebug()<< "Ejecutando commando "+CommandName;
-        this->runCmdSetNick(arg,from);
-        return;
-    }
-
-    qWarning()<<"Comando "+CommandName+" no encontrado";
-*/
-    return;
 }
 
 void QHBotCommands::runCmdHello(const QStringList &arg, const QString &from)
