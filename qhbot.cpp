@@ -32,7 +32,6 @@ void QHBot::sendRosterIq(QXmppIq* iq)
 }
 */
 
-/* Slot que es llamado cuando se recive un nuevo mensaje */
 void QHBot::messageReceived(const QXmppMessage& message)
 {
     /* TODO: Asegurarse de si esto es necesario */
@@ -48,7 +47,7 @@ void QHBot::messageReceived(const QXmppMessage& message)
     /* Si el mensaje es un mensaje de error lo descartamos */
     if(message.type()!=QXmppMessage::Chat) return;
 
-    /* TODO: Comprobar el grupo, no todos lo usuarios del roster son usuarios reales*/
+    /* TODO: Comprobar el grupo, no todos lo usuarios del roster son usuarios autorizados*/
     /* Nos aseguramos de que el mensaje está en la lista de usuarios */
     if(this->rosterManager().getRosterBareJids().contains(from))
     {
@@ -66,13 +65,11 @@ void QHBot::messageReceived(const QXmppMessage& message)
     }
 }
 
-/* Envía un mensaje a un único usuario por su JID */
 void QHBot::sendMessage(QString jid,QString  msg)
 {
     sendPacket(QXmppMessage("",jid,msg,""));
 }
 
-/* Envía un mensaje de difusión, que llega a todos los usuarios de la lista */
 void QHBot::sendBroadcast(const QXmppMessage &msg)
 {
     /* Bloqueamos el mutex para que solo haya un hilo ejecutando esta función */
