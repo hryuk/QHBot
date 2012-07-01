@@ -107,7 +107,7 @@ void QHBot::sendBroadcast(const QXmppMessage &msg)
     foreach(QHBotUser* UserTo,UserManager->getUsers())
     {
         /* Para reenviar, usuario tiene que estar conectado y no ser el remitente */
-        if(UserTo->isAvalible() && UserTo->getJID()!=JidFrom)
+        if(UserTo->isAvailable() && UserTo->getJID()!=JidFrom && !UserTo->isSnoozing())
         {
             qDebug()<<"Reenviando a "+UserTo->getJID();
 
