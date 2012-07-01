@@ -7,6 +7,7 @@ QHBotUser::QHBotUser(QObject *parent): QObject(parent)
 QHBotUser::QHBotUser(const QXmppRosterIq::Item &item, QObject *parent): QObject(parent){
     this->jid = item.bareJid();
     this->nick = item.name();
+    this->Snooze = false;
     //Si no hay nick en el roster, se usara  el usuario como nick
     if(nick == "")nick = jid.split("@").at(0);
 }
