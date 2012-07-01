@@ -11,7 +11,7 @@
 #include "qhbotcommands.h"
 #include "qhbotusermanager.h"
 
-/* Pequeño trick, clase solo usada para simular un sleep*/
+/* Pequeño trick, clase solo usada para simular un sleep */
 class SleepingThread : public QThread
 {
 public:
@@ -21,6 +21,8 @@ public:
     }
 };
 
+/* Clase principal, herada de QXmppClient, por lo que encapsula
+   la funcionalidad completa de un cliente XMPP */
 class QHBot : public QXmppClient
 {
     Q_OBJECT
@@ -37,12 +39,12 @@ private:
 
 public slots:
     void messageReceived(const QXmppMessage&);
-    void sendMsgBroadcast(const QXmppMessage&);
-    void sendMsg(QString jid,QString  msg);
-    void sendIQ(QXmppIq* iq);
+    void sendBroadcast(const QXmppMessage&);
+    void sendMessage(QString jid,QString  msg);
+    void sendRosterIq(QXmppIq* iq);
 
 signals:
-    void needMsgBroadcast(const QXmppMessage&);
+    void requestBroadcast(const QXmppMessage&);
     void textMsgReceived(const QXmppMessage&);
     void commandReceived(const QXmppMessage&);
 };
