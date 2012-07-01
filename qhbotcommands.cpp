@@ -80,5 +80,5 @@ void QHBotCommands::runCmdSetNick(const QStringList &arg)
 
 void QHBotCommands::runCmdSnoozing(const QStringList &arg, const QString &from)
 {
-    UserManager->getUser(from.split("/",QString::SkipEmptyParts).at(0))->setSnooze(arg.at(0)=="on");
+    UserManager->getUser(from.split("/").at(0))->setSnooze(arg.at(0)=="on");
 }
