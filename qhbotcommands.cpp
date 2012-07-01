@@ -17,10 +17,34 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
     qDebug()<<"Run command!!";
 
     QStringList arg=msg.body().split(" ");
-    QString CommandName=arg.at(0);
+    //QString CommandName=arg.at(0);
+    QString CommandName = arg.at(0).remove(0,1);
     QString from = msg.from();
     arg.removeAt(0);
 
+    switch(commands.indexOf(CommandName,0))
+    {
+    case -1://Si no encuentra el comando.
+        qWarning()<<"Comando " + CommandName+ " No Encontrado";
+        break;
+
+    case 0://Si recibe hello
+        qDebug()<< "Ejecutando commando "+CommandName;
+        this->runCmdHello(arg,from);
+        break;
+
+    case 1://Si recibe invite
+        qDebug()<< "Ejecutando commando "+CommandName;
+        this->runCmdInvite(arg,from);
+        break;
+
+    case 2://Si recibe setnick
+        qDebug()<< "Ejecutando commando "+CommandName;
+        this->runCmdSetNick(arg,from);
+        break;
+    }
+
+/*
     int i=0;
     if(CommandName=="/"+commands[i++])
     {
@@ -42,7 +66,7 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
     }
 
     qWarning()<<"Comando "+CommandName+" no encontrado";
-
+*/
     return;
 }
 
