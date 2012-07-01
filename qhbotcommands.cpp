@@ -3,12 +3,12 @@
 QHBotCommands::QHBotCommands(QHBotUserManager* UserManager, QObject *parent): QObject(parent)
 {
     this->UserManager=UserManager;
-    this->commands<<"hello"<<"invite"<<"setnick";
+    this->commands<<"hello"<<"invite"<<"setnick"<<"snooze";
 }
 
 bool QHBotCommands::isCommand(const QXmppMessage &msg)
 {
-    if(msg.body().startsWith("/")) return true;
+    if(msg.body().startsWith("$") || msg.body().startsWith("/") ) return true;
     else return false;
 }
 
@@ -19,7 +19,7 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
     QStringList arg=msg.body().split(" ");
     QString CommandName = arg.at(0);
     QString from = msg.from();
-    CommandName.remove("/");
+    CommandName.remove(0,1);
 
     arg.removeAt(0);
 
@@ -31,28 +31,32 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
 
     case 0://Si recibe hello
         qDebug()<< "Ejecutando commando "+CommandName;
-        this->runCmdHello(arg,from);
+        this->runCmdHello(arg);
         break;
 
     case 1://Si recibe invite
         qDebug()<< "Ejecutando commando "+CommandName;
-        this->runCmdInvite(arg,from);
+        this->runCmdInvite(arg);
         break;
 
     case 2://Si recibe setnick
         qDebug()<< "Ejecutando commando "+CommandName;
-        this->runCmdSetNick(arg,from);
+        this->runCmdSetNick(arg);
         break;
+
+    case 3:
+        qDebug()<< "Ejecutando commando "+CommandName;
+        this->runCmdSnoozing(arg,from);
+
     }
 }
 
-void QHBotCommands::runCmdHello(const QStringList &arg, const QString &from)
+void QHBotCommands::runCmdHello(const QStringList &arg)
 {
     emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast","Soy un bot!"));
-
 }
 
-void QHBotCommands::runCmdInvite(const QStringList &arg, const QString &from)
+void QHBotCommands::runCmdInvite(const QStringList &arg)
 {
     QRegExp rx("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$");
     rx.setCaseSensitivity(Qt::CaseInsensitive);
@@ -63,12 +67,18 @@ void QHBotCommands::runCmdInvite(const QStringList &arg, const QString &from)
         emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast","Soy un bot!"));
     }
 }
-void QHBotCommands::runCmdSetNick(const QStringList &arg, const QString &from)
+void QHBotCommands::runCmdSetNick(const QStringList &arg)
 {
     const QString& jid=arg.at(0);
     const QString& newNick=arg.at(1);
 
+
     UserManager->getUser(jid)->setNick(newNick);
 
     emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",jid+" es ahora conocido como "+newNick));
+}
+
+void QHBotCommands::runCmdSnoozing(const QStringList &arg, const QString &from)
+{
+    UserManager->getUser(from.split("/",QString::SkipEmptyParts).at(0))->setSnooze(arg.at(0)=="on");
 }

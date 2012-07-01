@@ -37,10 +37,11 @@ public slots:
     void runCommand(const QXmppMessage& msg);
 
 private slots:
-    void runCmdHello(const QStringList &arg,const QString& from);
-    void runCmdInvite(const QStringList &arg,const QString& from);
+    void runCmdHello(const QStringList &arg);
+    void runCmdInvite(const QStringList &arg);
     // /setNick <jid> <newNick>
-    void runCmdSetNick(const QStringList &arg,const QString& from);
+    void runCmdSetNick(const QStringList &arg);
+    void runCmdSnoozing(const QStringList &arg, const QString& from);
     
 };
 

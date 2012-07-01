@@ -36,7 +36,7 @@ void QHBotUserManager::updateUserList(const QString &bareJid){
     //Si esta lo modificamos
     if((user = getUser(bareJid))){
         QXmppRosterIq::Item item = RosterManager->getRosterEntry(bareJid);
-        //Si esta vacio, modificamos el roster, boramos el roster
+        //Si esta vacio, modificamos el roster, borramos el roster
         if(item.bareJid() == ""){
             users.removeOne(user);
             delete user;
