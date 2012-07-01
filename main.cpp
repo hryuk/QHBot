@@ -27,7 +27,7 @@ void mMsgOut(QtMsgType type,const char* msg)
 int main(int argc,char* argv[])
 {
     QCoreApplication a(argc,argv);
-    QCoreApplication::setOrganizationName("H-sec");
+    QCoreApplication::setOrganizationName("H-Sec");
     QCoreApplication::setOrganizationDomain("H-Sec.org");
     QCoreApplication::setApplicationName("QHBot");
 
