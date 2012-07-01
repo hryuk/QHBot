@@ -1,4 +1,4 @@
-#include "qhbotusermanager.h"
+﻿#include "qhbotusermanager.h"
 #include "qhbot.h"
 
 QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *parent): QObject()
@@ -105,12 +105,11 @@ QList<QHBotUser*> QHBotUserManager::getUsers()
 QHBotGroup* QHBotUserManager::getGroup(QString name){
     foreach(QHBotGroup* group,this->groups)
     {
-        /*if(group->getName()==name)
+        if(group->getName()==name)
         {
             return group;
-        }*/
+        }
     }
-
     return 0;
 }
 

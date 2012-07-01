@@ -1,4 +1,4 @@
-#include "qhbotuser.h"
+﻿#include "qhbotuser.h"
 #include "qhbotusermanager.h"
 
 QHBotUser::QHBotUser(QObject *parent): QObject(parent)
