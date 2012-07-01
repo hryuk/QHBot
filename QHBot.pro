@@ -21,7 +21,7 @@ SOURCES += main.cpp \
     qhbotgroup.cpp
 
 INCLUDEPATH += $$quote(qxmpp/include)
-LIBS += -lqxmpp -ldnsapi
+LIBS += -lqxmpp
 
 HEADERS += \
     qhbot.h \

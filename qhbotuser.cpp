@@ -16,10 +16,6 @@ void QHBotUser::setNick(QString newNick)
     this->nick=newNick;
     emit nickChange(this->jid,this->nick);
 
-    /*
-    QHBotUserManager* manager = ((QHBotUserManager*)parent());
-    manager->updateNick(this->jid,this->nick);
-    */
 }
 
 void QHBotUser::setJID(QString jid)

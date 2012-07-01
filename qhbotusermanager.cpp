@@ -105,12 +105,11 @@ QList<QHBotUser*> QHBotUserManager::getUsers()
 QHBotGroup* QHBotUserManager::getGroup(QString name){
     foreach(QHBotGroup* group,this->groups)
     {
-        /*if(group->getName()==name)
+        if(group->getName()==name)
         {
             return group;
-        }*/
+        }
     }
-
     return 0;
 }
 
