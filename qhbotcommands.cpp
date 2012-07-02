@@ -3,7 +3,7 @@
 QHBotCommands::QHBotCommands(QHBotUserManager* UserManager, QObject *parent): QObject(parent)
 {
     this->UserManager=UserManager;
-    this->commands<<"hello"<<"invite"<<"setnick"<<"snooze";
+    this->commands<<"hello"<<"invite"<<"setnick"<<"snooze"<<"list";
 }
 
 bool QHBotCommands::isCommand(const QXmppMessage &msg)
@@ -47,6 +47,11 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
     case 3:
         qDebug()<< "Ejecutando commando "+CommandName;
         this->runCmdSnoozing(arg,from);
+        break;
+
+    case 4:
+        qDebug()<<"Ejecutando comando "+CommandName;
+        this->runCmdList(arg,from);
 
     }
 }
@@ -64,7 +69,7 @@ void QHBotCommands::runCmdInvite(const QStringList &arg)
     if(UserManager->inviteUser(arg.at(0)))
     {
         qDebug()<<arg.at(0)<<" ha sido invitado";
-        emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast","Soy un bot!"));
+        emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",arg.at(0)+" ha sido invitado"));
     }
 }
 void QHBotCommands::runCmdSetNick(const QStringList &arg)
@@ -78,7 +83,21 @@ void QHBotCommands::runCmdSetNick(const QStringList &arg)
     emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",jid+" es ahora conocido como "+newNick));
 }
 
-void QHBotCommands::runCmdSnoozing(const QStringList &arg, const QString &from)
+void QHBotCommands::runCmdSnoozing(const QStringList &arg,const QString &from)
 {
     UserManager->getUser(from.split("/").at(0))->setSnooze(arg.at(0)=="on");
+}
+
+void QHBotCommands::runCmdList(const QStringList &arg, const QString &from)
+{
+    QStringList UserList;
+    foreach(QHBotUser* u,UserManager->getUsers())
+    {
+        UserList.append(QString("["+u->getNick()+"] ("+u->getJID()+")"));
+        UserList.last().insert(0,u->isAvailable()?"[+]":"[-]");
+    }
+
+    UserList.sort();
+
+    emit messageRequest(QXmppMessage("",from,"\n"+UserList.join("\n")));
 }
