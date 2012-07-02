@@ -40,8 +40,11 @@ public slots:
     bool inviteUser(QString jid);
     void removeUser(QHBotUser &user);
     void removeUser(QString jid);
-    void addGroup(QHBotGroup& grupo);
+    QHBotGroup& addGroup(QString name);
     void removeGroup(QString name);
+private slots:
+    void addMemberToGroup(QHBotUser &user,QHBotGroup& grupo);
+    void delMemberToGroup(QHBotUser &user,QHBotGroup& grupo);
     
 };
 
