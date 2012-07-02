@@ -27,6 +27,9 @@ public slots:
     void addMember(QHBotUser &user);
     void removeMember(QHBotUser &user);
     void removeMember(QString jid_or_nick);
+signals:
+    void memberAdded(QHBotUser &user,QHBotGroup& grupo);
+    void memberDeleted(QHBotUser &user,QHBotGroup& grupo);
 };
 
 #endif // QHBOTGROUP_H

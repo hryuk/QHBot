@@ -116,11 +116,34 @@ QHBotGroup* QHBotUserManager::getGroup(QString name){
 QList<QHBotGroup*> QHBotUserManager::getGroups(){
     return QList<QHBotGroup*>();
 }
-
-void QHBotUserManager::addGroup(QHBotGroup& grupo){
-
+QHBotGroup& QHBotUserManager::addGroup(QString name){
+    QHBotGroup* grupo;
+    if(!(grupo = getGroup(name))){
+        grupo = new QHBotGroup(name,this);
+        //Conecto con los slot de añadir y borrar grupos del roster
+        connect(grupo,SIGNAL(memberAdded(QHBotUser&,QHBotGroup&)),this,SLOT(addMemberToGroup(QHBotUser&,QHBotGroup&)));
+        connect(grupo,SIGNAL(memberDeleted(QHBotUser&,QHBotGroup&)),this,SLOT(delMemberToGroup(QHBotUser&,QHBotGroup&)));
+        groups.append(grupo);
+    }
+    return *grupo;
 }
 
 void QHBotUserManager::removeGroup(QString name){
-
+    QHBotGroup* grupo = 0;
+    if((grupo = getGroup(name))){
+        groups.removeOne(grupo);
+        delete grupo;
+    }
+}
+void QHBotUserManager::addMemberToGroup(QHBotUser &user, QHBotGroup &grupo){
+    QXmppRosterIq::Item item = RosterManager->getRosterEntry(user.getJID());
+    QSet<QString> grupos = item.groups();
+    grupos.insert(grupo.getName());
+    item.setGroups(grupos);
+}
+void QHBotUserManager::delMemberToGroup(QHBotUser &user, QHBotGroup &grupo){
+    QXmppRosterIq::Item item = RosterManager->getRosterEntry(user.getJID());
+    QSet<QString> grupos = item.groups();
+    grupos.remove(grupo.getName());
+    item.setGroups(grupos);
 }

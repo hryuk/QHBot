@@ -15,9 +15,12 @@ void QHBotGroup::removeMember(QHBotUser &user)
 void QHBotGroup::removeMember(QString jid_or_nick)
 {
     //Si contiene la @ es un jido. si no es un nick
-    if(jid_or_nick.contains("@")){
+    if(jid_or_nick.contains("@"))
+    {
+        //Borro al usuario con el jid indicado
         for(int i = 0;i<members.count();i++){
             if(members.at(i)->getJID() == jid_or_nick){
+                emit memberDeleted(*(members.at(i)),*this);
                 members.removeAt(i);
                 break;
             }
@@ -25,17 +28,22 @@ void QHBotGroup::removeMember(QString jid_or_nick)
     }
     else
     {
+        //Borro todos los que tengan el mismo nick
         for(int i = 0;i<members.count();i++){
             if(members.at(i)->getNick() == jid_or_nick){
+                emit memberDeleted(*(members.at(i)),*this);
                 members.removeAt(i);
             }
         }
     }
 }
-
 void QHBotGroup::addMember(QHBotUser &user)
 {
-    if(!isMember(user))members.append(&user);
+    if(!isMember(user))
+    {
+        members.append(&user);
+        emit memberAdded(user,*this);
+    }
 }
 
 void QHBotGroup::grantPrivilege(int priv)
