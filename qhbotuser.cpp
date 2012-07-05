@@ -1,4 +1,5 @@
 ﻿#include "qhbotuser.h"
+#include "qhbotgroup.h"
 #include "qhbotusermanager.h"
 
 QHBotUser::QHBotUser(QObject *parent): QObject(parent)
@@ -87,4 +88,34 @@ void QHBotUser::setSnooze(bool status)
 bool QHBotUser::isSnoozing()
 {
     return this->Snooze;
+}
+bool QHBotUser::isGroupMember(QString groupName){
+    bool isMember = false;
+    for(int i = 0;i<memberGroups.count();i++){
+        if(memberGroups.at(i)->getName() == groupName){
+            isMember = true;
+            break;
+        }
+    }
+    return isMember;
+}
+void QHBotUser::addToGroup(QHBotGroup& grupo){
+    //Si no es ya miembro lo agrego
+    if(!isGroupMember(grupo.getName())){
+        memberGroups.append(&grupo);
+        //Lo agrego tambien al objeto group
+        grupo.addMember(*this);
+    }
+}
+void QHBotUser::delToGroup(QString grupoName){
+    //busco el grupo y lo borro de la lista
+    for(int i = 0;i<memberGroups.count();i++){
+        if(memberGroups.at(i)->getName() == grupoName){
+            //Primero borro al user del grupo y luego borro el grupo de la lista de grupos miembro
+            QHBotGroup* groupToDel = memberGroups.at(i);
+            memberGroups.removeAt(i);
+            groupToDel->removeMember(*this);
+            break;
+        }
+    }
 }
