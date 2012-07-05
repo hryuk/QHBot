@@ -5,8 +5,9 @@
 #include <QXmppPresence.h>
 #include <QXmppRosterIq.h>
 
-#include "qhbotgroup.h"
+//#include "qhbotgroup.h"
 
+class QHBotGroup;
 class QHBotUser : public QObject
 {
     Q_OBJECT
@@ -22,14 +23,18 @@ public:
     bool isAvailable(QString resourceName);
     bool isSnoozing();
     void setSnooze(bool);//Snoozing para los usuarios.
+    bool isGroupMember(QString groupName);
+    void addToGroup(QHBotGroup& grupo);
+    void delToGroup(QString grupoName);
+    void delToGroup(QHBotGroup& grupo);
 
 private:
     QString jid;
     QString nick;
     QString lastResourceUsed;
     QMap<QString,QXmppPresence> nodos;
+    QList<QHBotGroup*> memberGroups;
     bool Snooze;
-    //QList<QHBotGroup> groups;
     
 signals:
     void nickChange(const QString& jid,const QString& newNickName);
@@ -43,18 +48,7 @@ public slots:
     QString getNick();
     QString getJID();
 
-    /*
-    const QString& getJID();
-    void setName(const QString&);
-    const QString& getName();
-    const QList<QString>& getGroups();
-    QXmppPresence getPresence();
-    void setPresence(QXmppPresence& toSet);
-
-    bool isGroupMember(QString& groupName);
-    QXmppRosterIq::Item& getRosterItem();
-    bool IsAdmin();
-    */
+private slots:
     
 };
 
