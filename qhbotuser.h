@@ -8,13 +8,14 @@
 //#include "qhbotgroup.h"
 
 class QHBotGroup;
+class QHBotUserManager;
 class QHBotUser : public QObject
 {
     Q_OBJECT
 public:
 
     explicit QHBotUser(QObject *parent = 0);
-    QHBotUser(const QXmppRosterIq::Item &item, QObject* parent = 0);
+    QHBotUser(const QXmppRosterIq::Item &item, QHBotUserManager& userManager);
     //No tiene sentido como slot porque solo recupera un valor
     QMap<QString,QXmppPresence> getPresence();
     QXmppPresence getPresence(QString resource);

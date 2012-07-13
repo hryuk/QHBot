@@ -1,7 +1,7 @@
 ﻿#include "qhbotusermanager.h"
 #include "qhbot.h"
 
-QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *parent): QObject()
+QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *parent): QObject(parent)
 {
     this->RosterManager=RosterManager;
     connect(RosterManager,SIGNAL(presenceChanged(const QString&,const QString&)),this,SLOT(updateUserPresence(const QString&,const QString&)));
@@ -18,7 +18,7 @@ void QHBotUserManager::populateUsers()
     {
         //FIXME: "limpiar" jid?
         QXmppRosterIq::Item item=RosterManager->getRosterEntry(jid);
-        QHBotUser* user=new QHBotUser(item,this);
+        QHBotUser* user=new QHBotUser(item,*this);
         //Aqui se rellena la lista de usuarios, no se recivio todavia la presencia de los usuarios
         /*
         //Guardo la presencia de todos los usuarios
@@ -29,6 +29,9 @@ void QHBotUserManager::populateUsers()
 
         connect(user,SIGNAL(nickChange(const QString&,const QString&)),this,SLOT(updateNick(const QString&,const QString&)));
         this->users.append(user);
+    }
+    foreach(QHBotGroup* grupo,groups){
+        qDebug()<<"groupName: "+grupo->getName()+"\n";
     }
 }
 void QHBotUserManager::updateUserList(const QString &bareJid){
@@ -49,7 +52,7 @@ void QHBotUserManager::updateUserList(const QString &bareJid){
     else //Si no esta lo añadimos
     {
         //Creo un nuevo usuario
-        user = new QHBotUser(RosterManager->getRosterEntry(bareJid),this);
+        user = new QHBotUser(RosterManager->getRosterEntry(bareJid),*this);
         connect(user,SIGNAL(nickChange(const QString&,const QString&)),this,SLOT(updateNick(const QString&,const QString&)));
         this->users.append(user);
     }
