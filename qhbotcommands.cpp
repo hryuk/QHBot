@@ -85,7 +85,10 @@ void QHBotCommands::runCmdSetNick(const QStringList &arg)
 
 void QHBotCommands::runCmdSnoozing(const QStringList &arg,const QString &from)
 {
-    UserManager->getUser(from.split("/").at(0))->setSnooze(arg.at(0)=="on");
+    if(arg.length() > 0 && (arg.at(0)=="on" || arg.at(0)=="off")){
+        UserManager->getUser(from.split("/").at(0))->setSnooze(arg.at(0)=="on");
+        emit messageRequest(QXmppMessage("", from, "Modo snooze "+arg.at(0)));
+    }
 }
 
 void QHBotCommands::runCmdList(const QStringList &arg, const QString &from)

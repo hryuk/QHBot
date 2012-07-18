@@ -75,8 +75,7 @@ void QHBot::sendMessage(const QXmppMessage &msg)
     else
     {
         qDebug()<<"Enviando mensaje";
-        msg.body()="[QHBot]: "+msg.body();
-        sendPacket(msg);
+        sendPacket(QXmppMessage("", msg.to(), "[QHBot]: "+msg.body()));
     }
 }
 
