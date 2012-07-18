@@ -49,6 +49,10 @@ int main(int argc,char* argv[])
 
     bot.connectToServer(config);
 
+    QStringList admins(settings.value("AdmList").toString().split(" "));
+    qDebug()<< "Admin principal: " +admins.at(0);
+    bot.setAdminList(admins);
+
     return a.exec();
 }
 

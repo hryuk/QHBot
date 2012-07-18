@@ -21,6 +21,12 @@ QHBot::~QHBot()
 
 }
 
+// FIXME: FIX PERMISOS
+void QHBot::setAdminList(QStringList admList)
+{
+    this->Commands->setAdmList(admList);
+}
+
 /*
 void QHBot::sendRosterIq(QXmppIq* iq)
 {
