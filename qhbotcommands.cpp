@@ -74,6 +74,9 @@ void QHBotCommands::runCmdInvite(const QStringList &arg)
 }
 void QHBotCommands::runCmdSetNick(const QStringList &arg)
 {
+    if(arg.length() < 2 || UserManager->getUser(arg.at(0)) == NULL) //No esta en la lista? No hacemos nada.
+        return;
+
     const QString& jid=arg.at(0);
     const QString& newNick=arg.at(1);
 
