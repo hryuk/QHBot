@@ -19,6 +19,8 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
     QStringList arg=msg.body().split(" ");
     QString CommandName = arg.at(0);
     QString from = msg.from();
+    //FIXME: FIX PERMISOS
+    QString fromEmail = from.split("/").at(0);
     CommandName.remove(0,1);
 
     arg.removeAt(0);
@@ -35,11 +37,18 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
         break;
 
     case 1://Si recibe invite
+        //FIXME: FIX PERMISOS
+        if(!admList.contains(fromEmail)) return;
         qDebug()<< "Ejecutando commando "+CommandName;
         this->runCmdInvite(arg);
         break;
 
     case 2://Si recibe setnick
+        /* FIXME: FIX PERMISOS */
+        if(!admList.contains(fromEmail)){
+            arg[0] = fromEmail;
+        }
+        /* END FIXME */
         qDebug()<< "Ejecutando commando "+CommandName;
         this->runCmdSetNick(arg);
         break;
@@ -65,6 +74,7 @@ void QHBotCommands::runCmdInvite(const QStringList &arg)
 {
     QRegExp rx("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$");
     rx.setCaseSensitivity(Qt::CaseInsensitive);
+    if(arg.length() < 1) return;
     if(!rx.exactMatch(arg.at(0))) return;
     if(UserManager->inviteUser(arg.at(0)))
     {
@@ -106,4 +116,10 @@ void QHBotCommands::runCmdList(const QStringList &arg, const QString &from)
     UserList.sort();
 
     emit messageRequest(QXmppMessage("",from,"\n"+UserList.join("\n")));
+}
+
+// FIXME: FIX PERMISOS
+void QHBotCommands::setAdmList(QStringList admList)
+{
+    this->admList = admList;
 }

@@ -45,10 +45,16 @@ int main(int argc,char* argv[])
     config.setUser(settings.value("User").toString());
     config.setPassword(settings.value("Password").toString());
     config.setPort(settings.value("Port").toInt());
-    settings.endGroup();
+    //settings.endGroup(); FIXME: FIX PERMISOS
 
     bot.connectToServer(config);
 
+    /* FIXME: FIX PERMISOS */
+    qDebug()<<"AdmList contiene: "<<settings.value("Admlist").toString();
+    QStringList admins(settings.value("Admlist").toString().split(" "));
+    bot.setAdminList(admins);
+    settings.endGroup();
+    /* FIXME: FIX PERMISOS */
     return a.exec();
 }
 
