@@ -16,6 +16,7 @@ public:
 private:
     QHBotUserManager* UserManager;
     QStringList commands;
+    QStringList admList;
 signals:
     /**
       \brief Esta señal es emitida siempre que un comando necesite enviar un mensaje de
@@ -35,6 +36,8 @@ public slots:
       \brief Ejecuta el comando contenido en el mensaje msg. Responde a la señal QHBot::commandReceived().
       **/
     void runCommand(const QXmppMessage& msg);
+
+    void setAdmList(QStringList admList);
 
 private slots:
     void runCmdHello(const QStringList &arg);

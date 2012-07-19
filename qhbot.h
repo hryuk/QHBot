@@ -68,6 +68,9 @@ public slots:
       **/
     void sendMessage(const QXmppMessage &msg);
 
+    //FIXME: FIX PERMISOS
+    void setAdminList(QStringList admList);
+
     //void sendRosterIq(QXmppIq* iq);
 
 signals:
