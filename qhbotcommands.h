@@ -43,7 +43,7 @@ private slots:
     void runCmdHello(const QStringList &arg);
     void runCmdInvite(const QStringList &arg);
     // /setNick <jid> <newNick>
-    void runCmdSetNick(const QStringList &arg);
+    void runCmdSetNick(const QStringList &arg, const QString &from);
     void runCmdSnoozing(const QStringList &arg, const QString &from);
     void runCmdList(const QStringList &arg,const QString &from);
     
