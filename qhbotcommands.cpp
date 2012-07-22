@@ -44,13 +44,8 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
         break;
 
     case 2://Si recibe setnick
-        /* FIXME: FIX PERMISOS */
-        if(!admList.contains(fromEmail)){
-            arg[0] = fromEmail;
-        }
-        /* END FIXME */
         qDebug()<< "Ejecutando commando "+CommandName;
-        this->runCmdSetNick(arg);
+        this->runCmdSetNick(arg, fromEmail);
         break;
 
     case 3:
@@ -82,12 +77,19 @@ void QHBotCommands::runCmdInvite(const QStringList &arg)
         emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",arg.at(0)+" ha sido invitado"));
     }
 }
-void QHBotCommands::runCmdSetNick(const QStringList &arg)
+void QHBotCommands::runCmdSetNick(const QStringList &arg, const QString &from)
 {
     if(arg.length() < 2 || UserManager->getUser(arg.at(0)) == NULL) //No esta en la lista? No hacemos nada.
         return;
 
-    const QString& jid=arg.at(0);
+    QString jid=arg.at(0); //Si el FIX PERMISOS se elimina, esto podría ser const.
+
+    /* FIXME: FIX PERMISOS */
+    if(!admList.contains(from)){
+        jid = from;
+    }
+    /* END FIXME */
+
     const QString& newNick=arg.at(1);
 
 
