@@ -7,9 +7,9 @@ QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *p
     connect(RosterManager,SIGNAL(presenceChanged(const QString&,const QString&)),this,SLOT(updateUserPresence(const QString&,const QString&)));
     connect(RosterManager,SIGNAL(rosterReceived ()),this,SLOT(populateUsers()));
     //Roster update y push
-    connect(RosterManager,SIGNAL(itemAdded(const QString&)),this,SLOT(updateUserList(const QString&)));
-    connect(RosterManager,SIGNAL(itemChanged(const QString&)),this,SLOT(updateUserList(const QString&)));
-    connect(RosterManager,SIGNAL(itemRemoved(const QString&)),this,SLOT(updateUserList(const QString&)));
+    connect(RosterManager,SIGNAL(itemAdded(const QString&)),this,SLOT(addUser(const QString&)));
+    connect(RosterManager,SIGNAL(itemChanged(const QString&)),this,SLOT(changeUser(const QString&)));
+    connect(RosterManager,SIGNAL(itemRemoved(const QString&)),this,SLOT(deleteUser(const QString&)));
 }
 
 void QHBotUserManager::populateUsers()
@@ -34,28 +34,27 @@ void QHBotUserManager::populateUsers()
         qDebug()<<"groupName: "+grupo->getName()+"\n";
     }
 }
-void QHBotUserManager::updateUserList(const QString &bareJid){
-    QHBotUser* user;
-    //Si esta lo modificamos
-    if((user = getUser(bareJid))){
-        QXmppRosterIq::Item item = RosterManager->getRosterEntry(bareJid);
-        //Si esta vacio, modificamos el roster, borramos el roster
-        if(item.bareJid() == ""){
-            users.removeOne(user);
-            delete user;
-        }
-        else //Modificamos el user
-        {
 
-        }
-    }
-    else //Si no esta lo añadimos
-    {
-        //Creo un nuevo usuario
-        user = new QHBotUser(RosterManager->getRosterEntry(bareJid),*this);
-        connect(user,SIGNAL(nickChange(const QString&,const QString&)),this,SLOT(updateNick(const QString&,const QString&)));
-        this->users.append(user);
-    }
+void QHBotUserManager::addUser(const QString &bareJid)
+{
+    //FIXME: eliminar el this, QHBot user no puede tener acceso al UserManager
+    QHBotUser* user=new QHBotUser(RosterManager->getRosterEntry(bareJid),*this);
+
+    connect(user,SIGNAL(nickChange(const QString&,const QString&)),this,SLOT(updateNick(const QString&,const QString&)));
+    this->users.append(user);
+}
+
+void QHBotUserManager::changeUser(const QString &bareJid)
+{
+}
+
+void QHBotUserManager::deleteUser(const QString &bareJid)
+{
+    QHBotUser* user=getUser(bareJid);
+    if(!user) return;
+
+    this->users.removeOne(user);
+    user->deleteLater();
 }
 
 void QHBotUserManager::updateNick(const QString& bareJid,const QString& newNick)
