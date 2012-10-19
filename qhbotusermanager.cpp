@@ -10,10 +10,14 @@ QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *p
     connect(RosterManager,SIGNAL(itemAdded(const QString&)),this,SLOT(addUser(const QString&)));
     connect(RosterManager,SIGNAL(itemChanged(const QString&)),this,SLOT(changeUser(const QString&)));
     connect(RosterManager,SIGNAL(itemRemoved(const QString&)),this,SLOT(deleteUser(const QString&)));
+
+    this->initialized=false;
 }
 
 void QHBotUserManager::populateUsers()
 {
+    if(initialized) return;
+
     foreach(QString jid,RosterManager->getRosterBareJids())
     {
         //FIXME: "limpiar" jid?
@@ -33,6 +37,8 @@ void QHBotUserManager::populateUsers()
     foreach(QHBotGroup* grupo,groups){
         qDebug()<<"groupName: "+grupo->getName()+"\n";
     }
+
+    initialized=true;
 }
 
 void QHBotUserManager::addUser(const QString &bareJid)

@@ -23,6 +23,7 @@ public:
 
 
 private:
+    bool initialized;
     QList<QHBotUser*> users;
     QList<QHBotGroup*> groups;
     QXmppRosterManager* RosterManager;

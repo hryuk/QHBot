@@ -45,6 +45,9 @@ int main(int argc,char* argv[])
     config.setUser(settings.value("User").toString());
     config.setPassword(settings.value("Password").toString());
     config.setPort(settings.value("Port").toInt());
+    config.setKeepAliveInterval(60);
+    config.setKeepAliveTimeout(15);
+    config.setAutoReconnectionEnabled(true);
     //settings.endGroup(); FIXME: FIX PERMISOS
 
     bot.connectToServer(config);
