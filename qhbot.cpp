@@ -11,7 +11,6 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
     connect(Commands,SIGNAL(messageRequest(const QXmppMessage&)),this,SLOT(sendMessage(const QXmppMessage&)));
     connect(this,SIGNAL(commandReceived(const QXmppMessage&)),Commands,SLOT(runCommand(const QXmppMessage&)));
 
-    connect(this,SIGNAL(disconnected()),this,SLOT(on_bot_disconnected()));
     /*
     connect(UserManager,SIGNAL(requestSendRosterIq(QXmppIq*)),this,SLOT(sendRosterIq(QXmppIq*)));
     */
