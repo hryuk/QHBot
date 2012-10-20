@@ -81,7 +81,7 @@ void QHBot::sendMessage(const QXmppMessage &msg)
     else
     {
         qDebug()<<"Enviando mensaje";
-        sendPacket(QXmppMessage("", msg.to(), "[QHBot]: "+msg.body()));
+        sendPacket(QXmppMessage("", msg.to(), "[Claptrap]: "+msg.body()));
     }
 }
 
@@ -99,7 +99,7 @@ void QHBot::sendBroadcast(const QXmppMessage &msg)
     if(msg.from()=="bot@h-sec.org")
     {
         JidFrom="bot@h-sec.org";
-        NickFrom="[QHBot]";
+        NickFrom="[Claptrap]";
     }
     else
     {
