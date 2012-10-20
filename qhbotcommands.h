@@ -17,6 +17,7 @@ private:
     QHBotUserManager* UserManager;
     QStringList commands;
     QStringList admList;
+    QStringList quotes;
 signals:
     /**
       \brief Esta señal es emitida siempre que un comando necesite enviar un mensaje de

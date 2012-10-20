@@ -6,6 +6,10 @@
 
 QT+=core gui network xml
 
+win32 {
+QT+=ws2
+}
+
 TARGET = QHBot
 CONFIG += console
 CONFIG -= app_bundle
