@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QXmppMessage.h>
 #include <QDebug>
+#include <QFile>
+#include <QTextStream>
+#include <QString>
 
 #include "qhbotusermanager.h"
 
@@ -18,6 +21,7 @@ private:
     QStringList commands;
     QStringList admList;
     QStringList quotes;
+
 signals:
     /**
       \brief Esta señal es emitida siempre que un comando necesite enviar un mensaje de
@@ -41,12 +45,14 @@ public slots:
     void setAdmList(QStringList admList);
 
 private slots:
-    void runCmdHello(const QStringList &arg);
+    void runCmdHello();
     void runCmdInvite(const QStringList &arg);
     // /setNick <jid> <newNick>
     void runCmdSetNick(const QStringList &arg, const QString &from);
     void runCmdSnoozing(const QStringList &arg, const QString &from);
-    void runCmdList(const QStringList &arg,const QString &from);
+    void runCmdList(const QString &from);
+    void runCmdSetQuote(const QStringList &arg);
+    void runCmdLoadQuotes();
     
 };
 

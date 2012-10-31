@@ -3,36 +3,8 @@
 QHBotCommands::QHBotCommands(QHBotUserManager* UserManager, QObject *parent): QObject(parent)
 {
     this->UserManager=UserManager;
-    this->commands<<"hello"<<"invite"<<"setnick"<<"snooze"<<"list";
-
-    quotes<<"Wow, tu no estás muerto?";
-    quotes<<"Yoo hoooooooooo!";
-    quotes<<"I am the best robot. Yeah, yeah, yeah, I am the best robot. Ooh, ooh, here we go!";
-    quotes<<"O dios mío, estoy goteando! Creo que estoy goteando! Ahhh, hay aceite por todas partes!";
-    quotes<<"Puedo ver a través del tiempo...";
-    quotes<<"Como nuevo, creo. Estoy goteando?";
-    quotes<<"Oh, mira, es otra bolsa de carne maloliente";
-    quotes<<"Tengo dos opciones. Puedo escucharos mover vuestra repugnante carne... Ó... puedo enchufar un electrodo en mi panel trasero y llamarlo paraíso";
-    quotes<<"Estoy muy contento de no estar hecho de carne sabrosa como vosotros";
-    quotes<<"Que nadie se mueva! He perdido mi lentilla...";
-    quotes<<"He ganado los siguientes premios este año: 'Claptrap más eficaz en situaciones potencialmente mortales', 'Bailarín de Breackdance más caliente', 'Orador maestro' y 'Mejor beso'";
-    quotes<<"Dood doo doo";
-    quotes<<"Mataré a la persona que querais si alguien me deja salir de aquí. Nunca me gustó Snifer, es solo una sugerencia";
-    quotes<<"No me déis la espalda si no queréis no poder dar la espalda a nada jamás. Eso sonó a amenaza... puedo volver a intentarlo?";
-    quotes<<"Vale, ahora estoy mentalmente sano. No más maldades, ahora soy Robo-Teresa. DEJADME SALIR!!";
-    quotes<<"No me ames... extraño. He sido lastimado demasiadas veces... por zombies";
-    quotes<<"Ha pasado mucho desde que llegue aquí. Ahora estoy como en casa... excepto por los zombies";
-    quotes<<"V al aserradero, dijeron. Va a ser bueno para su carrera, dijeron. AYUDA!";
-    quotes<<"¡Ayudadme! ¿Hay alguien ahí?";
-    quotes<<"Me vendría bien un .. pbht pbht .. Bien! Ahora tengo un .. pbht pbht ... aserrín en mi unidad de enunciación vocal";
-    quotes<<"¿Hay alguna persona de carne y hueso por ahí?";
-    quotes<<"Vamos, sacádme de aquí! Ella no me dijo su edad!";
-    quotes<<"Hey, mirad. Puedo hacer lo que sea por salir de aquí. Pensad en ello. Nada es demasiado grande, nada es demasiado pequeño, no sé si lo pilláis...";
-    quotes<<"No estoy sujeto a vuestras leyes. No me programaron para hacer esto!";
-    quotes<<"Haré lo que queráis para salir de aqui. Hablando en serio, lo digo en serio. Cualquier cosa que querais. Cualquier cosa. Pensad en ello";
-    quotes<<"Cuando salga de aqui, putos, algunos de vosotros sereis apuñalados. De hecho, batiré el record de apuñalamientos en este planta.";
-    quotes<<"Aaah! ¡Oh, no! AAAAHHHHH!";
-    quotes<<"Alguien conoce a un exorcista? No, nada? Ok";
+    this->commands<<"hello"<<"invite"<<"setnick"<<"snooze"<<"list"<<"setquote"<<"loadquote";
+    this->runCmdLoadQuotes();
 }
 
 bool QHBotCommands::isCommand(const QXmppMessage &msg)
@@ -62,7 +34,7 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
 
     case 0://Si recibe hello
         qDebug()<< "Ejecutando commando "+CommandName;
-        this->runCmdHello(arg);
+        this->runCmdHello();
         break;
 
     case 1://Si recibe invite
@@ -84,17 +56,29 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
 
     case 4:
         qDebug()<<"Ejecutando comando "+CommandName;
-        this->runCmdList(arg,from);
+        this->runCmdList(from);
 
+    case 5:
+        qDebug()<<"Ejecutando comando "+CommandName;
+        this->runCmdSetQuote(arg);
+
+    case 6:
+        qDebug()<<"Ejecutando comando "+CommandName;
+        this->runCmdLoadQuotes();
     }
 }
 
-void QHBotCommands::runCmdHello(const QStringList &arg)
+void QHBotCommands::runCmdHello()
 {
-    QTime time = QTime::currentTime();
-    qsrand((uint)time.msec());
+    if(this->quotes.isEmpty())
+        emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast","No tengo frases... Que planeas que diga?"));
+    else
+    {
+        QTime time = QTime::currentTime();
+        qsrand((uint)time.msec());
 
-    emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",quotes.at((qrand()%(28)))));
+        emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",quotes.at((qrand()%quotes.size()))));
+    }
 }
 
 void QHBotCommands::runCmdInvite(const QStringList &arg)
@@ -138,7 +122,7 @@ void QHBotCommands::runCmdSnoozing(const QStringList &arg,const QString &from)
     }
 }
 
-void QHBotCommands::runCmdList(const QStringList &arg, const QString &from)
+void QHBotCommands::runCmdList(const QString &from)
 {
     QStringList UserList;
     foreach(QHBotUser* u,UserManager->getUsers())
@@ -156,4 +140,47 @@ void QHBotCommands::runCmdList(const QStringList &arg, const QString &from)
 void QHBotCommands::setAdmList(QStringList admList)
 {
     this->admList = admList;
+}
+
+void QHBotCommands::runCmdLoadQuotes() //Load all Quotes on every Hello...
+{
+    QFile file("quotes.dat");
+    QString quote;
+
+    this->quotes.clear();
+
+    file.open(QIODevice::ReadWrite | QIODevice::Append);
+
+    QTextStream in_out(&file);
+
+    in_out.seek(0);
+
+    quote = in_out.readLine();
+
+    while(!quote.isNull())
+    {
+        quotes.append(quote);
+        quote = in_out.readLine();
+    }
+
+    file.close();
+}
+
+void QHBotCommands::runCmdSetQuote(const QStringList &arg) // To Write quotes inside quotes.dat file.
+{
+    QFile file("quotes.dat");
+    QString quote = arg.at(0);
+
+    for(int i = 1; i<arg.size(); i++)
+        quote+=arg.at(i)+" ";
+
+    file.open(QIODevice::WriteOnly | QIODevice::Append);
+
+    QTextStream out(&file);
+
+    out<<quote<<endl;
+
+    file.close();
+
+    this->runCmdLoadQuotes();
 }
