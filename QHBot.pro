@@ -32,3 +32,6 @@ HEADERS += \
     qhbotusermanager.h \
     qhbotcommands.h \
     qhbotgroup.h
+
+RESOURCES += \
+    resource.qrc

@@ -11,6 +11,21 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
     connect(Commands,SIGNAL(messageRequest(const QXmppMessage&)),this,SLOT(sendMessage(const QXmppMessage&)));
     connect(this,SIGNAL(commandReceived(const QXmppMessage&)),Commands,SLOT(runCommand(const QXmppMessage&)));
 
+    QXmppVCardIq vCard("bot@h-sec.org");
+    vCard.setNickName("Claptrap");
+    vCard.setEmail("bot@h-sec.org");
+    vCard.setFirstName("Claptrap");
+    vCard.setLastName("Claptrap");
+    vCard.setUrl("http://foro.h-sec.org");
+
+    QFile filePhoto(":/res/avatar.png");
+    filePhoto.open(QIODevice::ReadOnly);
+    QByteArray photoData=filePhoto.readAll();
+    filePhoto.close();
+
+    vCard.setPhoto(photoData);
+    vCardManager().setClientVCard(vCard);
+
     /*
     connect(UserManager,SIGNAL(requestSendRosterIq(QXmppIq*)),this,SLOT(sendRosterIq(QXmppIq*)));
     */

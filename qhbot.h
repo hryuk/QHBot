@@ -7,6 +7,9 @@
 #include <QXmppRosterManager.h>
 #include <QThread>
 #include <QMutex>
+#include <QXmppVCardManager.h>
+#include <QXmppVCardIq.h>
+#include <QFile>
 
 #include "qhbotcommands.h"
 #include "qhbotusermanager.h"
