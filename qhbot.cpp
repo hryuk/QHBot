@@ -11,7 +11,7 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
     connect(Commands,SIGNAL(messageRequest(const QXmppMessage&)),this,SLOT(sendMessage(const QXmppMessage&)));
     connect(this,SIGNAL(commandReceived(const QXmppMessage&)),Commands,SLOT(runCommand(const QXmppMessage&)));
 
-    QXmppVCardIq vCard("bot@h-sec.org");
+    QXmppVCardIq vCard;
     vCard.setNickName("Claptrap");
     vCard.setEmail("bot@h-sec.org");
     vCard.setFirstName("Claptrap");
