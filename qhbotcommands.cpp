@@ -147,13 +147,15 @@ void QHBotCommands::runCmdHelp(const QString &from)
         help<<QString("/setquote: \n");
         help<<QString("/loadquote: Carga las frases del archivo quotes.dat\n");
     }
+
+    emit messageRequest(QXmppMessage("bot@h-sec.org",from,help.join("")));
 }
 
 void QHBotCommands::runCmdSource(const QString &from)
 {
     QString sourceMsg="Código disponible en https://github.com/hzeroo/QHBot";
 
-    emit messageRequest(QXmppMessage("bot@h-sec.org",sourceMsg));
+    emit messageRequest(QXmppMessage("bot@h-sec.org",from,sourceMsg));
 }
 
 void QHBotCommands::runCmdBusy(const QString &from)
