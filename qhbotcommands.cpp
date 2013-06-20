@@ -158,10 +158,11 @@ void QHBotCommands::runCmdHelp(const QString &from)
 {
     QStringList help;
     help<<QString("\n/hello: Hace que el bot salude\n");
-    help<<QString("/help: Muestra este mensaje de ayuda\n");
     help<<QString("/list: Lista los usuarios suscritos al bot y su estado\n");
+    help<<QString("/nick <nick>: Cambia el nick que los otros usuarios ven\n");
     help<<QString("/busy: Te pone ausente\n");
     help<<QString("/back: Quita el estado de ausencia\n");
+    help<<QString("/help: Muestra este mensaje de ayuda\n");
     help<<QString("/source: Muestra donde se aloja el código del bot\n");
     if(admList.contains(from))
     {
