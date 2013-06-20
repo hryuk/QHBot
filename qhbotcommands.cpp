@@ -162,14 +162,20 @@ void QHBotCommands::runCmdSource(const QString &from)
 
 void QHBotCommands::runCmdBusy(const QString &from)
 {
-    UserManager->getUser(from)->setSnooze(true);
-    emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",UserManager->getUser(from)->getNick()+" está ahora ausente"));
+    if(!UserManager->getUser(from)->isSnoozing())
+    {
+        emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",UserManager->getUser(from)->getNick()+" está ahora ausente"));
+        UserManager->getUser(from)->setSnooze(true);
+    }
 }
 
 void QHBotCommands::runCmdBack(const QString &from)
 {
-    UserManager->getUser(from)->setSnooze(false);
-    emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",UserManager->getUser(from)->getNick()+" ha vuelto"));
+    if(UserManager->getUser(from)->isSnoozing())
+    {
+        UserManager->getUser(from)->setSnooze(false);
+        emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",UserManager->getUser(from)->getNick()+" ha vuelto"));
+    }
 }
 
 void QHBotCommands::runCmdList(const QString &from)
