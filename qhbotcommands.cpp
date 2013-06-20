@@ -140,11 +140,8 @@ void QHBotCommands::runCmdNick(const QStringList &arg, const QString &from)
 
 void QHBotCommands::runCmdSetNick(const QStringList &arg, const QString &from)
 {
-
     if(arg.length() != 2 || UserManager->getUser(arg.at(0))==NULL) return;
-
-
-    if(!admList.contains(from) && from!=arg.at(0)) return;
+    if(!admList.contains(from)) return;
 
     //Si no es un nick válido, no hacemos nada
     QRegExp rx("[a-z0-9_\\-\\[\\]]{2,15}");
