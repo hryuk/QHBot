@@ -124,7 +124,7 @@ void QHBotCommands::runCmdNick(const QStringList &arg, const QString &from)
     if(arg.length() != 1) return;
 
     //Si no es un nick válido, no hacemos nada
-    QRegExp rx("/\\A[a-z_\\-\\[\\]\\\\^{}|`][a-z0-9_\\-\\[\\]\\\\^{}|`]{2,15}\\z");
+    QRegExp rx("\\A[a-z0-9_\\-\\[\\]\\\\^{}|`]{2,15}\\z");
     rx.setCaseSensitivity(Qt::CaseInsensitive);
     if(!rx.exactMatch(arg.at(0))) return;
 
@@ -143,7 +143,7 @@ void QHBotCommands::runCmdSetNick(const QStringList &arg, const QString &from)
     if(!admList.contains(from) && from!=arg.at(0)) return;
 
     //Si no es un nick válido, no hacemos nada
-    QRegExp rx("/\\A[a-z_\\-\\[\\]\\\\^{}|`][a-z0-9_\\-\\[\\]\\\\^{}|`]{2,15}\\z");
+    QRegExp rx("\\A[a-z0-9_\\-\\[\\]\\\\^{}|`]{2,15}\\z");
     rx.setCaseSensitivity(Qt::CaseInsensitive);
     if(!rx.exactMatch(arg.at(1))) return;
 
