@@ -3,7 +3,7 @@
 QHBotCommands::QHBotCommands(QHBotUserManager* UserManager, QObject *parent): QObject(parent)
 {
     this->UserManager=UserManager;
-    this->commands<<"hello"<<"invite"<<"setnick"<<"help"<<"list"<<"setquote"<<"loadquote"<<"busy"<<"back"<<"source";
+    this->commands<<"hello"<<"invite"<<"setnick"<<"help"<<"list"<<"setquote"<<"loadquote"<<"busy"<<"back"<<"source"<<"nick";
     this->runCmdLoadQuotes();
 }
 
@@ -82,6 +82,11 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
         qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdSource(from);
     break;
+
+    case 10://nick
+        qDebug()<<"Ejecutando comando "+CommandName;
+        this->runCmdNick(arg,from);
+    break;
     }
 }
 
@@ -113,10 +118,26 @@ void QHBotCommands::runCmdInvite(const QStringList &arg)
         emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",arg.at(0)+" ha sido invitado"));
     }
 }
+
+void QHBotCommands::runCmdNick(const QStringList &arg, const QString &from)
+{
+    if(arg.length() != 1) return;
+
+    //Si no es un nick válido, no hacemos nada
+    QRegExp rx("/\\A[a-z_\\-\\[\\]\\\\^{}|`][a-z0-9_\\-\\[\\]\\\\^{}|`]{2,15}\\z");
+    rx.setCaseSensitivity(Qt::CaseInsensitive);
+    if(!rx.exactMatch(arg.at(0))) return;
+
+    QString lastNick=UserManager->getUser(from)->getNick();
+    UserManager->getUser(from)->setNick(arg.at(0));
+
+    emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",lastNick+" es ahora conocido como "+arg.at(0)));
+}
+
 void QHBotCommands::runCmdSetNick(const QStringList &arg, const QString &from)
 {
 
-    if(arg.length() < 2 || UserManager->getUser(arg.at(0))==NULL) return;
+    if(arg.length() != 2 || UserManager->getUser(arg.at(0))==NULL) return;
 
 
     if(!admList.contains(from) && from!=arg.at(0)) return;
@@ -188,7 +209,7 @@ void QHBotCommands::runCmdList(const QString &from)
         jidChunk<<jid.split("@").at(0);
         jidChunk<<jid.split("@").at(1).split("."+jid.split(".").last()).at(0);
         jidChunk<<jid.split(".").last();
-        UserList.append(QString("["+u->getNick()+"] <"+jidChunk[0]+"[at]"+jidChunk[1]+"[dot]"+jidChunk[2]+"> "+(u->isSnoozing()?"busy":"")));
+        UserList.append(QString("["+u->getNick()+"]     <"+jidChunk[0]+"[at]"+jidChunk[1]+"[dot]"+jidChunk[2]+"> "+(u->isSnoozing()?"     (busy)":"")));
         UserList.last().insert(0,u->isAvailable()?"[+]":"[-]");
     }
 

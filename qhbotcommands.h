@@ -55,6 +55,7 @@ private slots:
     void runCmdBusy(const QString &from);
     void runCmdBack(const QString &from);
     void runCmdSource(const QString &from);
+    void runCmdNick(const QStringList &arg, const QString &from);
     
 };
 
