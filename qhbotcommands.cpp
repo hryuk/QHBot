@@ -139,6 +139,8 @@ void QHBotCommands::runCmdHelp(const QString &from)
     help<<QString("\n/hello: Hace que el bot salude\n");
     help<<QString("/help: Muestra este mensaje de ayuda\n");
     help<<QString("/list: Lista los usuarios suscritos al bot y su estado\n");
+    help<<QString("/busy: Te pone ausente\n");
+    help<<QString("/back: Quita el estado de ausencia\n");
     help<<QString("/source: Muestra donde se aloja el código del bot\n");
     if(admList.contains(from))
     {
@@ -178,7 +180,7 @@ void QHBotCommands::runCmdList(const QString &from)
         QString jid=u->getJID();
         QStringList jidChunk;
         jidChunk<<jid.split("@").at(0);
-        jidChunk<<jid.split("@").at(1).split(jid.split(".").last()).at(0);
+        jidChunk<<jid.split("@").at(1).split("."+jid.split(".").last()).at(0);
         jidChunk<<jid.split(".").last();
         UserList.append(QString("["+u->getNick()+"] <"+jidChunk[0]+"[at]"+jidChunk[1]+"[dot]"+jidChunk[2]+"> "+(u->isSnoozing()?"busy":"")));
         UserList.last().insert(0,u->isAvailable()?"[+]":"[-]");
