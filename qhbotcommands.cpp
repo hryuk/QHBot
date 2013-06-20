@@ -126,7 +126,11 @@ void QHBotCommands::runCmdNick(const QStringList &arg, const QString &from)
     //Si no es un nick válido, no hacemos nada
     QRegExp rx("[a-z0-9_\\-\\[\\]]{2,15}");
     rx.setCaseSensitivity(Qt::CaseInsensitive);
-    if(!rx.exactMatch(arg.at(0))) return;
+    if(!rx.exactMatch(arg.at(0)) || arg.at(0).contains("claptrap",Qt::CaseInsensitive))
+    {
+        emit messageRequest(QXmppMessage("bot@h-sec.org",from,"Nick no válido. Nicks aceptados: "+rx.pattern()));
+        return;
+    }
 
     QString lastNick=UserManager->getUser(from)->getNick();
     UserManager->getUser(from)->setNick(arg.at(0));
@@ -159,7 +163,7 @@ void QHBotCommands::runCmdHelp(const QString &from)
     QStringList help;
     help<<QString("\n/hello: Hace que el bot salude\n");
     help<<QString("/list: Lista los usuarios suscritos al bot y su estado\n");
-    help<<QString("/nick <nick>: Cambia el nick que los otros usuarios ven\n");
+    help<<QString("/nick: <nick>: Cambia el nick que los otros usuarios ven\n");
     help<<QString("/busy: Te pone ausente\n");
     help<<QString("/back: Quita el estado de ausencia\n");
     help<<QString("/help: Muestra este mensaje de ayuda\n");
