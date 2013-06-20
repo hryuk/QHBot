@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Authors:
  *  Manjeet Dahiya
@@ -61,7 +61,7 @@ class QXmppRosterManagerPrivate;
 ///
 /// \ingroup Managers
 
-class QXmppRosterManager : public QXmppClientExtension
+class QXMPP_EXPORT QXmppRosterManager : public QXmppClientExtension
 {
     Q_OBJECT
 
@@ -83,19 +83,14 @@ public:
     bool handleStanza(const QDomElement &element);
     /// \endcond
 
-    // deprecated in release 0.4.0
-    /// \cond
-    void Q_DECL_DEPRECATED removeRosterEntry(const QString &bareJid);
-    /// \endcond
-
 public slots:
-    bool acceptSubscription(const QString &bareJid);
-    bool refuseSubscription(const QString &bareJid);
+    bool acceptSubscription(const QString &bareJid, const QString &reason = QString());
+    bool refuseSubscription(const QString &bareJid, const QString &reason = QString());
     bool addItem(const QString &bareJid, const QString &name = QString(), const QSet<QString> &groups = QSet<QString>());
     bool removeItem(const QString &bareJid);
     bool renameItem(const QString &bareJid, const QString &name);
-    bool subscribe(const QString &bareJid);
-    bool unsubscribe(const QString &bareJid);
+    bool subscribe(const QString &bareJid, const QString &reason = QString());
+    bool unsubscribe(const QString &bareJid, const QString &reason = QString());
 
 signals:
     /// This signal is emitted when the Roster IQ is received after a successful
@@ -106,11 +101,6 @@ signals:
 
     /// This signal is emitted when the presence of a particular bareJid and resource changes.
     void presenceChanged(const QString& bareJid, const QString& resource);
-
-    /// \cond
-    // deprecated in release 0.4.0
-    void rosterChanged(const QString& bareJid);
-    /// \endcond
 
     /// This signal is emitted when a contact asks to subscribe to your presence.
     ///

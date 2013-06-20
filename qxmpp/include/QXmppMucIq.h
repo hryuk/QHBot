@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
@@ -33,7 +33,7 @@
 ///
 /// \ingroup Stanzas
 
-class QXmppMucItem
+class QXMPP_EXPORT QXmppMucItem
 {
 public:
     /// This enum is used to represent long-lived permissions in a room (affiliations).
@@ -76,10 +76,10 @@ public:
     Role role() const;
     void setRole(Role role);
 
+    /// \cond
     void parse(const QDomElement &element);
     void toXml(QXmlStreamWriter *writer) const;
 
-    /// \cond
     static Affiliation affiliationFromString(const QString &affiliationStr);
     static QString affiliationToString(Affiliation affiliation);
     static Role roleFromString(const QString &roleStr);
@@ -101,7 +101,7 @@ private:
 ///
 /// \ingroup Stanzas
 
-class QXmppMucAdminIq : public QXmppIq
+class QXMPP_EXPORT QXmppMucAdminIq : public QXmppIq
 {
 public:
     QList<QXmppMucItem> items() const;
@@ -129,7 +129,7 @@ private:
 /// \sa QXmppDataForm
 ///
 
-class QXmppMucOwnerIq : public QXmppIq
+class QXMPP_EXPORT QXmppMucOwnerIq : public QXmppIq
 {
 public:
     QXmppDataForm form() const;

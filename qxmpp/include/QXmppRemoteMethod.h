@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Authors:
  *  Ian Reinhart Geiser
@@ -39,7 +39,7 @@ struct QXmppRemoteMethodResult {
     QVariant result;
 };
 
-class QXmppRemoteMethod : public QObject
+class QXMPP_EXPORT QXmppRemoteMethod : public QObject
 {
     Q_OBJECT
 public:

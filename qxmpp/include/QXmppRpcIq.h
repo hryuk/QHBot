@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Authors:
  *  Ian Reinhart Geiser
@@ -28,21 +28,19 @@
 #include "QXmppIq.h"
 #include <QVariant>
 
-class QXmlStreamWriter;
-class QDomElement;
-
-namespace XMLRPC
+class QXMPP_EXPORT QXmppRpcMarshaller
 {
-    void marshall( QXmlStreamWriter *writer, const QVariant &value);
-    QVariant demarshall(const QDomElement &elem, QStringList &errors);
-}
+public:
+    static void marshall( QXmlStreamWriter *writer, const QVariant &value);
+    static QVariant demarshall(const QDomElement &elem, QStringList &errors);
+};
 
 /// \brief The QXmppRpcResponseIq class represents an IQ used to carry
 /// an RPC response as specified by XEP-0009: Jabber-RPC.
 ///
 /// \ingroup Stanzas
 
-class QXmppRpcResponseIq : public QXmppIq
+class QXMPP_EXPORT QXmppRpcResponseIq : public QXmppIq
 {
 public:
     QXmppRpcResponseIq();
@@ -77,7 +75,7 @@ private:
 ///
 /// \ingroup Stanzas
 
-class QXmppRpcInvokeIq : public QXmppIq
+class QXMPP_EXPORT QXmppRpcInvokeIq : public QXmppIq
 {
 public:
     QXmppRpcInvokeIq();
@@ -105,7 +103,7 @@ private:
     friend class QXmppRpcErrorIq;
 };
 
-class QXmppRpcErrorIq : public QXmppIq
+class QXMPP_EXPORT QXmppRpcErrorIq : public QXmppIq
 {
 public:
     QXmppRpcErrorIq();

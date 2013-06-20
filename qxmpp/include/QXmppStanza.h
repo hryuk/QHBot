@@ -1,8 +1,10 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
- * Author:
+ * Authors:
  *  Manjeet Dahiya
+ *  Jeremy Lainé
+ *  Georg Rudoy
  *
  * Source:
  *  http://code.google.com/p/qxmpp
@@ -25,9 +27,9 @@
 #ifndef QXMPPSTANZA_H
 #define QXMPPSTANZA_H
 
-#include "QXmppElement.h"
-#include "QXmppPacket.h"
+#include <QByteArray>
 #include <QString>
+#include <QSharedData>
 
 // forward declarations of QXmlStream* classes will not work on Mac, we need to
 // include the whole header.
@@ -35,16 +37,60 @@
 // for an explanation.
 #include <QXmlStreamWriter>
 
+#include "QXmppElement.h"
+
+class QXmppExtendedAddressPrivate;
+
+/// \brief Represents an extended address as defined by XEP-0033: Extended Stanza Addressing.
+///
+/// Extended addresses maybe of different types: some are defined by XEP-0033,
+/// others are defined in separate XEPs (for instance XEP-0146: Remote Controlling Clients).
+/// That is why the "type" property is a string rather than an enumerated type.
+
+class QXMPP_EXPORT QXmppExtendedAddress
+{
+public:
+    QXmppExtendedAddress();
+    QXmppExtendedAddress(const QXmppExtendedAddress&);
+    ~QXmppExtendedAddress();
+
+    QXmppExtendedAddress& operator=(const QXmppExtendedAddress&);
+
+    QString description() const;
+    void setDescription(const QString &description);
+
+    QString jid() const;
+    void setJid(const QString &jid);
+
+    QString type() const;
+    void setType(const QString &type);
+
+    bool isDelivered() const;
+    void setDelivered(bool);
+
+    bool isValid() const;
+
+    /// \cond
+    void parse(const QDomElement &element);
+    void toXml(QXmlStreamWriter *writer) const;
+    /// \endcond
+
+private:
+    QSharedDataPointer<QXmppExtendedAddressPrivate> d;
+};
+
+class QXmppStanzaPrivate;
+
 /// \defgroup Stanzas
 
 /// \brief The QXmppStanza class is the base class for all XMPP stanzas.
 ///
 /// \ingroup Stanzas
 
-class QXmppStanza : public QXmppPacket
+class QXMPP_EXPORT QXmppStanza
 {
 public:
-    class Error
+    class QXMPP_EXPORT Error
     {
     public:
         enum Type
@@ -98,9 +144,6 @@ public:
         void setType(Type type);
         Type type() const;
 
-        // FIXME : remove this once is gone
-        bool isValid() const;
-
         /// \cond
         void parse(const QDomElement &element);
         void toXml(QXmlStreamWriter *writer) const;
@@ -120,7 +163,10 @@ public:
     };
 
     QXmppStanza(const QString& from = QString(), const QString& to = QString());
-    ~QXmppStanza();
+    QXmppStanza(const QXmppStanza &other);
+    virtual ~QXmppStanza();
+
+    QXmppStanza& operator=(const QXmppStanza &other);
 
     QString to() const;
     void setTo(const QString&);
@@ -140,23 +186,21 @@ public:
     QXmppElementList extensions() const;
     void setExtensions(const QXmppElementList &elements);
 
+    QList<QXmppExtendedAddress> extendedAddresses() const;
+    void setExtendedAddresses(const QList<QXmppExtendedAddress> &extendedAddresses);
+
     /// \cond
-    // FIXME : why is this needed?
-    bool isErrorStanza() const;
+    virtual void parse(const QDomElement &element);
+    virtual void toXml(QXmlStreamWriter *writer) const = 0;
 
 protected:
+    void extensionsToXml(QXmlStreamWriter *writer) const;
     void generateAndSetNextId();
-    void parse(const QDomElement &element);
     /// \endcond
 
 private:
+    QSharedDataPointer<QXmppStanzaPrivate> d;
     static uint s_uniqeIdNo;
-    QString m_to;
-    QString m_from;
-    QString m_id;
-    QString m_lang;
-    QXmppStanza::Error m_error;
-    QXmppElementList m_extensions;
 };
 
 #endif // QXMPPSTANZA_H

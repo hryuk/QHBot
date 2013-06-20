@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -33,11 +33,13 @@
 // for an explanation.
 #include <QXmlStreamWriter>
 
+class QXmppIqPrivate;
+
 /// \brief The QXmppIq class is the base class for all IQs.
 ///
 /// \ingroup Stanzas
 
-class QXmppIq : public QXmppStanza
+class QXMPP_EXPORT QXmppIq : public QXmppStanza
 {
 public:
     /// This enum describes the type of IQ.
@@ -50,6 +52,10 @@ public:
     };
 
     QXmppIq(QXmppIq::Type type = QXmppIq::Get);
+    QXmppIq(const QXmppIq &other);
+    ~QXmppIq();
+
+    QXmppIq& operator=(const QXmppIq &other);
 
     QXmppIq::Type type() const;
     void setType(QXmppIq::Type);
@@ -64,10 +70,7 @@ protected:
     /// \endcond
 
 private:
-    QString getTypeStr() const;
-    void setTypeFromStr(const QString& str);
-
-    Type m_type;
+    QSharedDataPointer<QXmppIqPrivate> d;
 };
 
 #endif // QXMPPIQ_H

@@ -21,30 +21,40 @@
  *
  */
 
-#ifndef QXMPPVERSIONIQ_H
-#define QXMPPVERSIONIQ_H
 
+#ifndef QXMPPREGISTERIQ_H
+#define QXMPPREGISTERIQ_H
+
+#include "QXmppDataForm.h"
 #include "QXmppIq.h"
 
-/// \brief The QXmppVersionIq class represents an IQ for conveying a software
-/// version as defined by XEP-0092: Software Version.
+/// \brief The QXmppRegisterIq class represents a registration IQ
+/// as defined by XEP-0077: In-Band Registration.
+///
+/// It is used to create an account on the server.
 ///
 /// \ingroup Stanzas
 
-class QXMPP_EXPORT QXmppVersionIq : public QXmppIq
+class QXMPP_EXPORT QXmppRegisterIq : public QXmppIq
 {
 public:
-    QString name() const;
-    void setName(const QString &name);
+    QString email() const;
+    void setEmail(const QString &email);
 
-    QString os() const;
-    void setOs(const QString &os);
+    QXmppDataForm form() const;
+    void setForm(const QXmppDataForm &form);
 
-    QString version() const;
-    void setVersion(const QString &version);
+    QString instructions() const;
+    void setInstructions(const QString &instructions);
+
+    QString password() const;
+    void setPassword(const QString &username);
+
+    QString username() const;
+    void setUsername(const QString &username);
 
     /// \cond
-    static bool isVersionIq(const QDomElement &element);
+    static bool isRegisterIq(const QDomElement &element);
     /// \endcond
 
 protected:
@@ -54,9 +64,11 @@ protected:
     /// \endcond
 
 private:
-    QString m_name;
-    QString m_os;
-    QString m_version;
+    QXmppDataForm m_form;
+    QString m_email;
+    QString m_instructions;
+    QString m_password;
+    QString m_username;
 };
 
 #endif

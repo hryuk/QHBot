@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Authors:
  *  Manjeet Dahiya
@@ -44,7 +44,7 @@ class QXmppOutgoingClientPrivate;
 /// to an XMPP server.
 ///
 
-class QXmppOutgoingClient : public QXmppStream
+class QXMPP_EXPORT QXmppOutgoingClient : public QXmppStream
 {
     Q_OBJECT
 
@@ -53,6 +53,7 @@ public:
     ~QXmppOutgoingClient();
 
     void connectToHost();
+    bool isAuthenticated() const;
     bool isConnected() const;
 
     QSslSocket *socket() const { return QXmppStream::socket(); };
@@ -86,6 +87,7 @@ protected:
 
 private slots:
     void _q_dnsLookupFinished();
+    void _q_socketDisconnected();
     void socketError(QAbstractSocket::SocketError);
     void socketSslErrors(const QList<QSslError>&);
 
@@ -95,12 +97,10 @@ private slots:
     void pingTimeout();
 
 private:
-    void sendAuthDigestMD5ResponseStep1(const QString& challenge);
-    void sendAuthDigestMD5ResponseStep2(const QString& challenge);
-    void sendAuthXFacebookResponse(const QString& challenge);
     void sendNonSASLAuth(bool plaintext);
     void sendNonSASLAuthQuery();
 
+    friend class QXmppOutgoingClientPrivate;
     QXmppOutgoingClientPrivate * const d;
 };
 

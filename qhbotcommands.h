@@ -47,12 +47,14 @@ public slots:
 private slots:
     void runCmdHello();
     void runCmdInvite(const QStringList &arg);
-    // /setNick <jid> <newNick>
     void runCmdSetNick(const QStringList &arg, const QString &from);
-    void runCmdSnoozing(const QStringList &arg, const QString &from);
+    void runCmdHelp(const QString &from);
     void runCmdList(const QString &from);
     void runCmdSetQuote(const QStringList &arg);
     void runCmdLoadQuotes();
+    void runCmdBusy(const QString &from);
+    void runCmdBack(const QString &from);
+    void runCmdSource(const QString &from);
     
 };
 

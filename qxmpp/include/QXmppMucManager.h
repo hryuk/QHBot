@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
@@ -29,6 +29,7 @@
 #include "QXmppPresence.h"
 
 class QXmppDataForm;
+class QXmppDiscoveryIq;
 class QXmppMessage;
 class QXmppMucManagerPrivate;
 class QXmppMucRoom;
@@ -55,7 +56,7 @@ class QXmppMucRoomPrivate;
 ///
 /// \ingroup Managers
 
-class QXmppMucManager : public QXmppClientExtension
+class QXMPP_EXPORT QXmppMucManager : public QXmppClientExtension
 {
     Q_OBJECT
     Q_PROPERTY(QList<QXmppMucRoom*> rooms READ rooms NOTIFY roomAdded)
@@ -97,13 +98,14 @@ private:
 ///
 /// \sa QXmppMucManager
 
-class QXmppMucRoom : public QObject
+class QXMPP_EXPORT QXmppMucRoom : public QObject
 {
     Q_OBJECT
     Q_FLAGS(Action Actions)
     Q_PROPERTY(QXmppMucRoom::Actions allowedActions READ allowedActions NOTIFY allowedActionsChanged)
     Q_PROPERTY(bool isJoined READ isJoined NOTIFY isJoinedChanged)
     Q_PROPERTY(QString jid READ jid CONSTANT)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString nickName READ nickName WRITE setNickName NOTIFY nickNameChanged)
     Q_PROPERTY(QStringList participants READ participants NOTIFY participantsChanged)
     Q_PROPERTY(QString password READ password WRITE setPassword)
@@ -126,10 +128,12 @@ public:
     Actions allowedActions() const;
     bool isJoined() const;
     QString jid() const;
+    QString name() const;
 
     QString nickName() const;
     void setNickName(const QString &nickName);
 
+    Q_INVOKABLE QString participantFullJid(const QString &jid) const;
     QXmppPresence participantPresence(const QString &jid) const;
     QStringList participants() const;
 
@@ -165,6 +169,9 @@ signals:
     /// This signal is emitted when a message is received.
     void messageReceived(const QXmppMessage &message);
 
+    /// This signal is emitted when the room's human-readable name changes.
+    void nameChanged(const QString &name);
+
     /// This signal is emitted when your own nick name changes.
     void nickNameChanged(const QString &nickName);
 
@@ -188,6 +195,7 @@ signals:
     void subjectChanged(const QString &subject);
 
 public slots:
+    bool ban(const QString &jid, const QString &reason);
     bool join();
     bool kick(const QString &jid, const QString &reason);
     bool leave(const QString &message = QString());
@@ -200,6 +208,7 @@ public slots:
 
 private slots:
     void _q_disconnected();
+    void _q_discoveryInfoReceived(const QXmppDiscoveryIq &iq);
     void _q_messageReceived(const QXmppMessage &message);
     void _q_presenceReceived(const QXmppPresence &presence);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Authors:
  *  Manjeet Dahiya
@@ -34,12 +34,12 @@
 ///
 /// \ingroup Stanzas
 
-class QXmppRosterIq : public QXmppIq
+class QXMPP_EXPORT QXmppRosterIq : public QXmppIq
 {
 public:
 
     /// \brief The QXmppRosterIq::Item class represents a roster entry.
-    class Item
+    class QXMPP_EXPORT Item
     {
     public:
         /// An enumeration for type of subscription with the bareJid in the roster.

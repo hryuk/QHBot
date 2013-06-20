@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
@@ -25,16 +25,14 @@
 #define QXMPPARCHIVEIQ_H
 
 #include "QXmppIq.h"
+#include "QXmppResultSet.h"
 
 #include <QDateTime>
 
-class QXmlStreamWriter;
-class QDomElement;
-
-/// \brief The QXmppArchiveMessage represents an archived message
+/// \brief The QXmppArchiveMessage class represents an archived message
 /// as defined by XEP-0136: Message Archiving.
 
-class QXmppArchiveMessage
+class QXMPP_EXPORT QXmppArchiveMessage
 {
 public:
     QXmppArchiveMessage();
@@ -54,10 +52,10 @@ private:
     bool m_received;
 };
 
-/// \brief The QXmppArchiveChat represents an archived conversation
+/// \brief The QXmppArchiveChat class represents an archived conversation
 /// as defined by XEP-0136: Message Archiving.
 
-class QXmppArchiveChat
+class QXMPP_EXPORT QXmppArchiveChat
 {
 public:
     QXmppArchiveChat();
@@ -82,7 +80,7 @@ public:
 
     /// \cond
     void parse(const QDomElement &element);
-    void toXml(QXmlStreamWriter *writer) const;
+    void toXml(QXmlStreamWriter *writer, const QXmppResultSetReply &rsm = QXmppResultSetReply()) const;
     /// \endcond
 
 private:
@@ -100,40 +98,39 @@ private:
 ///
 /// \ingroup Stanzas
 
-class QXmppArchiveChatIq : public QXmppIq
+class QXMPP_EXPORT QXmppArchiveChatIq : public QXmppIq
 {
 public:
     QXmppArchiveChat chat() const;
     void setChat(const QXmppArchiveChat &chat);
 
+    QXmppResultSetReply resultSetReply() const;
+    void setResultSetReply(const QXmppResultSetReply &rsm);
+
     /// \cond
     static bool isArchiveChatIq(const QDomElement &element);
-    /// \endcond
 
 protected:
-    /// \cond
     void parseElementFromChild(const QDomElement &element);
     void toXmlElementFromChild(QXmlStreamWriter *writer) const;
     /// \endcond
 
 private:
     QXmppArchiveChat m_chat;
+    QXmppResultSetReply m_rsmReply;
 };
 
 /// \brief Represents an archive list as defined by XEP-0136: Message Archiving.
 ///
 /// \ingroup Stanzas
 
-class QXmppArchiveListIq : public QXmppIq
+class QXMPP_EXPORT QXmppArchiveListIq : public QXmppIq
 {
 public:
     QXmppArchiveListIq();
 
     QList<QXmppArchiveChat> chats() const;
     void setChats(const QList<QXmppArchiveChat> &chats);
-
-    int max() const;
-    void setMax(int max);
 
     QString with() const;
     void setWith( const QString &with );
@@ -143,6 +140,12 @@ public:
 
     QDateTime end() const;
     void setEnd(const QDateTime &end );
+
+    QXmppResultSetQuery resultSetQuery() const;
+    void setResultSetQuery(const QXmppResultSetQuery &rsm);
+
+    QXmppResultSetReply resultSetReply() const;
+    void setResultSetReply(const QXmppResultSetReply &rsm);
 
     /// \cond
     static bool isArchiveListIq(const QDomElement &element);
@@ -155,18 +158,19 @@ protected:
     /// \endcond
 
 private:
-    int m_max;
     QString m_with;
     QDateTime m_start;
     QDateTime m_end;
     QList<QXmppArchiveChat> m_chats;
+    QXmppResultSetQuery m_rsmQuery;
+    QXmppResultSetReply m_rsmReply;
 };
 
 /// \brief Represents an archive remove IQ as defined by XEP-0136: Message Archiving.
 ///
 /// \ingroup Stanzas
 
-class QXmppArchiveRemoveIq : public QXmppIq
+class QXMPP_EXPORT QXmppArchiveRemoveIq : public QXmppIq
 {
 public:
     QString with() const;
@@ -180,10 +184,8 @@ public:
 
     /// \cond
     static bool isArchiveRemoveIq(const QDomElement &element);
-    /// \endcond
 
 protected:
-    /// \cond
     void parseElementFromChild(const QDomElement &element);
     void toXmlElementFromChild(QXmlStreamWriter *writer) const;
     /// \endcond
@@ -198,13 +200,10 @@ private:
 ///
 /// \ingroup Stanzas
 
-class QXmppArchiveRetrieveIq : public QXmppIq
+class QXMPP_EXPORT QXmppArchiveRetrieveIq : public QXmppIq
 {
 public:
     QXmppArchiveRetrieveIq();
-
-    int max() const;
-    void setMax(int max);
 
     QDateTime start() const;
     void setStart(const QDateTime &start);
@@ -212,35 +211,34 @@ public:
     QString with() const;
     void setWith(const QString &with);
 
+    QXmppResultSetQuery resultSetQuery() const;
+    void setResultSetQuery(const QXmppResultSetQuery &rsm);
+
     /// \cond
     static bool isArchiveRetrieveIq(const QDomElement &element);
-    /// \endcond
 
 protected:
-    /// \cond
     void parseElementFromChild(const QDomElement &element);
     void toXmlElementFromChild(QXmlStreamWriter *writer) const;
     /// \endcond
 
 private:
-    int m_max;
     QString m_with;
     QDateTime m_start;
+    QXmppResultSetQuery m_rsmQuery;
 };
 
 /// \brief Represents an archive preference IQ as defined by XEP-0136: Message Archiving.
 ///
 /// \ingroup Stanzas
 
-class QXmppArchivePrefIq : public QXmppIq
+class QXMPP_EXPORT QXmppArchivePrefIq : public QXmppIq
 {
 public:
     /// \cond
     static bool isArchivePrefIq(const QDomElement &element);
-    /// \endcond
 
 protected:
-    /// \cond
     void parseElementFromChild(const QDomElement &element);
     void toXmlElementFromChild(QXmlStreamWriter *writer) const;
     /// \endcond

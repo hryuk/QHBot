@@ -6,10 +6,6 @@
 
 QT+=core gui network xml
 
-win32 {
-QT+=ws2
-}
-
 TARGET = QHBot
 CONFIG += console
 CONFIG -= app_bundle
@@ -24,7 +20,15 @@ SOURCES += main.cpp \
     qhbotgroup.cpp
 
 INCLUDEPATH += $$quote(qxmpp/include)
-LIBS += -lqxmpp
+
+win32 {
+    LIBS += -L$$quote($$_PRO_FILE_PWD_/qxmpp/lib) -lqxmpp0
+}
+
+unix
+{
+    LIBS += -lqxmpp0
+}
 
 HEADERS += \
     qhbot.h \

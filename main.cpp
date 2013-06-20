@@ -5,21 +5,21 @@
 
 #include "qhbot.h"
 
-void mMsgOut(QtMsgType type,const char* msg)
+void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     switch (type)
     {
         case QtDebugMsg:
-            fprintf(stdout,"Debug: %s\n",msg);
+            fprintf(stdout,"Debug: %s\n",msg.toLatin1().data());
             break;
         case QtWarningMsg:
-            fprintf(stdout,"Warning: %s\n",msg);
+            fprintf(stdout,"Warning: %s\n",msg.toLatin1().data());
             break;
         case QtCriticalMsg:
-            fprintf(stdout,"Critical: %s\n",msg);
+            fprintf(stdout,"Critical: %s\n",msg.toLatin1().data());
             break;
         case QtFatalMsg:
-            fprintf(stdout,"Fatal: %s\n",msg);
+            fprintf(stdout,"Fatal: %s\n",msg.toLatin1().data());
             abort();
     }
 }
@@ -31,7 +31,7 @@ int main(int argc,char* argv[])
     QCoreApplication::setOrganizationDomain("H-Sec.org");
     QCoreApplication::setApplicationName("QHBot");
 
-    qInstallMsgHandler(mMsgOut);
+    qInstallMessageHandler(myMessageOutput);
 
     QXmppLogger::getLogger()->setLoggingType(QXmppLogger::StdoutLogging);
 

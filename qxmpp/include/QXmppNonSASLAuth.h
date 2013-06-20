@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -26,7 +26,7 @@
 
 #include "QXmppIq.h"
 
-class QXmppNonSASLAuthIq : public QXmppIq
+class QXMPP_EXPORT QXmppNonSASLAuthIq : public QXmppIq
 {
 public:
     QXmppNonSASLAuthIq();

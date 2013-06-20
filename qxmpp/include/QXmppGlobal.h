@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -27,6 +27,22 @@
 
 #include <QString>
 
+#if defined(QXMPP_STATIC)
+#  define QXMPP_EXPORT
+#else
+#  if defined(QXMPP_BUILD)
+#    define QXMPP_EXPORT Q_DECL_EXPORT
+#  else
+#    define QXMPP_EXPORT Q_DECL_IMPORT
+#  endif
+#endif
+
+#if defined(QXMPP_AUTOTEST_INTERNAL)
+#    define QXMPP_AUTOTEST_EXPORT QXMPP_EXPORT
+#else
+#    define QXMPP_AUTOTEST_EXPORT
+#endif
+
 /// This macro expands a numeric value of the form 0xMMNNPP (MM =
 /// major, NN = minor, PP = patch) that specifies QXmpp's version
 /// number. For example, if you compile your application against
@@ -36,8 +52,8 @@
 /// available.
 ///
 
-#define QXMPP_VERSION 0x000400
+#define QXMPP_VERSION 0x000706
 
-QString QXmppVersion();
+QXMPP_EXPORT QString QXmppVersion();
 
 #endif //QXMPPGLOBAL_H

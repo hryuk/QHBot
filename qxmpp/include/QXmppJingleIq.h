@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
@@ -32,7 +32,7 @@
 /// as specified by XEP-0167: Jingle RTP Sessions and RFC 5245.
 ///
 
-class QXmppJinglePayloadType
+class QXMPP_EXPORT QXmppJinglePayloadType
 {
 public:
     QXmppJinglePayloadType();
@@ -79,7 +79,7 @@ private:
 /// as specified by XEP-0176: Jingle ICE-UDP Transport Method.
 ///
 
-class QXmppJingleCandidate
+class QXMPP_EXPORT QXmppJingleCandidate
 {
 public:
     /// This enum is used to describe a candidate's type.
@@ -125,12 +125,12 @@ public:
 
     bool isNull() const;
 
-    static QXmppJingleCandidate::Type typeFromString(const QString &typeStr, bool *ok = 0);
-    static QString typeToString(QXmppJingleCandidate::Type type);
-
     /// \cond
     void parse(const QDomElement &element);
     void toXml(QXmlStreamWriter *writer) const;
+
+    static QXmppJingleCandidate::Type typeFromString(const QString &typeStr, bool *ok = 0);
+    static QString typeToString(QXmppJingleCandidate::Type type);
     /// \endcond
 
 private:
@@ -151,7 +151,7 @@ private:
 ///
 /// \ingroup Stanzas
 
-class QXmppJingleIq : public QXmppIq
+class QXMPP_EXPORT QXmppJingleIq : public QXmppIq
 {
 public:
     /// This enum is used to describe a Jingle action.
@@ -178,7 +178,7 @@ public:
     /// The QXmppJingleIq::Content class represents the "content" element of a
     /// QXmppJingleIq.
 
-    class Content
+    class QXMPP_EXPORT Content
     {
     public:
         Content();
@@ -234,7 +234,7 @@ public:
     /// The QXmppJingleIq::Reason class represents the "reason" element of a
     /// QXmppJingleIq.
 
-    class Reason
+    class QXMPP_EXPORT Reason
     {
     public:
         enum Type {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -28,12 +28,14 @@
 #include <QDateTime>
 #include "QXmppStanza.h"
 
+class QXmppMessagePrivate;
+
 /// \brief The QXmppMessage class represents an XMPP message.
 ///
 /// \ingroup Stanzas
 ///
 
-class QXmppMessage : public QXmppStanza
+class QXMPP_EXPORT QXmppMessage : public QXmppStanza
 {
 public:
     /// This enum described a message type.
@@ -60,7 +62,10 @@ public:
 
     QXmppMessage(const QString& from = "", const QString& to = "",
                  const QString& body = "", const QString& thread = "");
+    QXmppMessage(const QXmppMessage &other);
     ~QXmppMessage();
+
+    QXmppMessage& operator=(const QXmppMessage &other);
 
     QString body() const;
     void setBody(const QString&);
@@ -70,6 +75,15 @@ public:
 
     bool isReceiptRequested() const;
     void setReceiptRequested(bool requested);
+
+    QString mucInvitationJid() const;
+    void setMucInvitationJid(const QString &jid);
+
+    QString mucInvitationPassword() const;
+    void setMucInvitationPassword(const QString &password);
+
+    QString mucInvitationReason() const;
+    void setMucInvitationReason(const QString &reason);
 
     QString receiptId() const;
     void setReceiptId(const QString &id);
@@ -89,35 +103,16 @@ public:
     QXmppMessage::Type type() const;
     void setType(QXmppMessage::Type);
 
+    QString xhtml() const;
+    void setXhtml(const QString &xhtml);
+
     /// \cond
     void parse(const QDomElement &element);
     void toXml(QXmlStreamWriter *writer) const;
     /// \endcond
 
 private:
-    /// This enum describe a type of message timestamp.
-    enum StampType
-    {
-        LegacyDelayedDelivery,  ///< XEP-0091: Legacy Delayed Delivery
-        DelayedDelivery,        ///< XEP-0203: Delayed Delivery
-    };
-
-    QString getTypeStr() const;
-    void setTypeFromStr(const QString&);
-
-    Type m_type;
-    QDateTime m_stamp;
-    StampType m_stampType;
-    State m_state;
-
-    bool m_attentionRequested;
-    QString m_body;
-    QString m_subject;
-    QString m_thread;
-
-    // Request message receipt as per XEP-0184.
-    QString m_receiptId;
-    bool m_receiptRequested;
+    QSharedDataPointer<QXmppMessagePrivate> d;
 };
 
 #endif // QXMPPMESSAGE_H

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
@@ -25,24 +25,54 @@
 #define QXMPPDATAFORM_H
 
 #include <QPair>
-#include <QString>
 #include <QVariant>
-#include <QXmlStreamWriter>
 
-class QDomElement;
+#include "QXmppStanza.h"
+
+class QXmppDataFormPrivate;
+class QXmppDataFormFieldPrivate;
+class QXmppDataFormMediaPrivate;
 
 /// \brief The QXmppDataForm class represents a data form as defined by
 /// XEP-0004: Data Forms.
 ///
 
-class QXmppDataForm
+class QXMPP_EXPORT QXmppDataForm
 {
 public:
+    /// \brief The QXmppDataForm::Media class represents a media field
+    /// as defined by XEP-0221: Data Forms Media Element.
+    ///
+
+    class QXMPP_EXPORT Media
+    {
+    public:
+        Media();
+        Media(const QXmppDataForm::Media &other);
+        ~Media();
+
+        QXmppDataForm::Media& operator=(const QXmppDataForm::Media &other);
+
+        int height() const;
+        void setHeight(int height);
+
+        int width() const;
+        void setWidth(int width);
+
+        QList<QPair<QString, QString> > uris() const;
+        void setUris(const QList<QPair<QString, QString> > &uris);
+
+        bool isNull() const;
+
+    private:
+        QSharedDataPointer<QXmppDataFormMediaPrivate> d;
+    };
+
     /// \brief The QXmppDataForm::Field class represents a data form field
     /// as defined by XEP-0004: Data Forms.
     ///
 
-    class Field
+    class QXMPP_EXPORT Field
     {
     public:
         /// This enum is used to describe a field's type.
@@ -61,6 +91,10 @@ public:
         };
 
         Field(QXmppDataForm::Field::Type type = QXmppDataForm::Field::TextSingleField);
+        Field(const QXmppDataForm::Field &other);
+        ~Field();
+
+        QXmppDataForm::Field& operator=(const QXmppDataForm::Field &other);
 
         QString description() const;
         void setDescription(const QString &description);
@@ -70,6 +104,9 @@ public:
 
         QString label() const;
         void setLabel(const QString &label);
+
+        Media media() const;
+        void setMedia(const Media &media);
 
         QList<QPair<QString, QString> > options() const;
         void setOptions(const QList<QPair<QString, QString> > &options);
@@ -84,13 +121,7 @@ public:
         void setValue(const QVariant &value);
 
     private:
-        QString m_description;
-        QString m_key;
-        QString m_label;
-        QList<QPair<QString, QString> > m_options;
-        bool m_required;
-        QXmppDataForm::Field::Type m_type;
-        QVariant m_value;
+        QSharedDataPointer<QXmppDataFormFieldPrivate> d;
     };
 
     /// This enum is used to describe a form's type.
@@ -109,6 +140,10 @@ public:
     };
 
     QXmppDataForm(QXmppDataForm::Type type = QXmppDataForm::None);
+    QXmppDataForm(const QXmppDataForm &other);
+    ~QXmppDataForm();
+
+    QXmppDataForm& operator=(const QXmppDataForm &other);
 
     QString instructions() const;
     void setInstructions(const QString &instructions);
@@ -131,10 +166,7 @@ public:
     /// \endcond
 
 private:
-    QString m_instructions;
-    QList<Field> m_fields;
-    QString m_title;
-    QXmppDataForm::Type m_type;
+    QSharedDataPointer<QXmppDataFormPrivate> d;
 };
 
 #endif

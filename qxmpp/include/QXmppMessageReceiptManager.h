@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Authors:
  *  Georg Rudoy
@@ -33,7 +33,7 @@
 ///
 /// \ingroup Managers
 
-class QXmppMessageReceiptManager : public QXmppClientExtension
+class QXMPP_EXPORT QXmppMessageReceiptManager : public QXmppClientExtension
 {
     Q_OBJECT
 public:

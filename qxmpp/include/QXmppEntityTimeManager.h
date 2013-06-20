@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -34,7 +34,7 @@ class QXmppEntityTimeIq;
 ///
 /// \ingroup Managers
 
-class QXmppEntityTimeManager : public QXmppClientExtension
+class QXMPP_EXPORT QXmppEntityTimeManager : public QXmppClientExtension
 {
     Q_OBJECT
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
@@ -28,19 +28,14 @@
 #include <QStringList>
 #include <QXmlStreamWriter>
 
+#include "QXmppGlobal.h"
+
 class QDomElement;
 class QXmppElement;
 class QXmppElementPrivate;
 
-class QXmppElementList : public QList<QXmppElement>
-{
-public:
-    QXmppElementList();
-    QXmppElementList(const QXmppElement &element);
-    QXmppElementList(const QList<QXmppElement> &other);
-};
-
-class QXmppElement
+typedef QList<QXmppElement> QXmppElementList;
+class QXMPP_EXPORT QXmppElement
 {
 public:
     QXmppElement();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
@@ -21,23 +21,41 @@
  *
  */
 
-#ifndef QXMPPSTREAMINITIATIONIQ_H
-#define QXMPPSTREAMINITIATIONIQ_H
+#ifndef QXMPPSTREAMINITIATIONIQ_P_H
+#define QXMPPSTREAMINITIATIONIQ_P_H
 
 #include <QDateTime>
 
+#include "QXmppDataForm.h"
 #include "QXmppIq.h"
+#include "QXmppTransferManager.h"
 
-class QDomElement;
-class QXmlStreamWriter;
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QXmpp API.  It exists for the convenience
+// of the QXmppTransferManager class.
+//
+// This header file may change from version to version without notice,
+// or even be removed.
+//
+// We mean it.
+//
 
-class QXmppStreamInitiationIq : public QXmppIq
+class QXMPP_AUTOTEST_EXPORT QXmppStreamInitiationIq : public QXmppIq
 {
 public:
     enum Profile {
         None = 0,
         FileTransfer,
     };
+
+    QXmppDataForm featureForm() const;
+    void setFeatureForm(const QXmppDataForm &form);
+
+    QXmppTransferFileInfo fileInfo() const;
+    void setFileInfo(const QXmppTransferFileInfo &info);
 
     QString mimeType() const;
     void setMimeType(const QString &mimeType);
@@ -48,9 +66,6 @@ public:
     QString siId() const;
     void setSiId(const QString &id);
 
-    QXmppElementList siItems() const;
-    void setSiItems(const QXmppElementList &items);
-
     static bool isStreamInitiationIq(const QDomElement &element);
 
 protected:
@@ -60,10 +75,11 @@ protected:
     /// \endcond
 
 private:
+    QXmppDataForm m_featureForm;
+    QXmppTransferFileInfo m_fileInfo;
     QString m_mimeType;
     Profile m_profile;
     QString m_siId;
-    QXmppElementList m_siItems;
 };
 
 #endif

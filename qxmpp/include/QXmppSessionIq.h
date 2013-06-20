@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -29,11 +29,11 @@
 #include "QXmppIq.h"
 
 /// \brief The QXmppSessionIq class represents an IQ used for session
-/// establishment as defined by RFC 5921.
+/// establishment as defined by RFC 3921.
 ///
 /// \ingroup Stanzas
 
-class QXmppSessionIq : public QXmppIq
+class QXMPP_EXPORT QXmppSessionIq : public QXmppIq
 {
 public:
     /// \cond

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -28,6 +28,8 @@
 
 #include <QObject>
 
+#include "QXmppGlobal.h"
+
 #ifdef QXMPP_LOGGABLE_TRACE
 #define qxmpp_loggable_trace(x) QString("%1(0x%2) %3").arg(metaObject()->className(), QString::number(reinterpret_cast<qint64>(this), 16), x)
 #else
@@ -40,7 +42,7 @@ class QXmppLoggerPrivate;
 ///
 /// \ingroup Core
 
-class QXmppLogger : public QObject
+class QXMPP_EXPORT QXmppLogger : public QObject
 {
     Q_OBJECT
     Q_ENUMS(LoggingType)
@@ -87,6 +89,9 @@ public:
     void setMessageTypes(QXmppLogger::MessageTypes types);
 
 public slots:
+    virtual void setGauge(const QString &gauge, double value);
+    virtual void updateCounter(const QString &counter, qint64 amount);
+
     void log(QXmppLogger::MessageType type, const QString& text);
     void reopen();
 
@@ -103,7 +108,7 @@ private:
 ///
 /// \ingroup Core
 
-class QXmppLoggable : public QObject
+class QXMPP_EXPORT QXmppLoggable : public QObject
 {
     Q_OBJECT
 
@@ -161,8 +166,14 @@ protected:
     }
 
 signals:
+    /// Sets the given \a gauge to \a value.
+    void setGauge(const QString &gauge, double value);
+
     /// This signal is emitted to send logging messages.
     void logMessage(QXmppLogger::MessageType type, const QString &msg);
+
+    /// Updates the given \a counter by \a amount.
+    void updateCounter(const QString &counter, qint64 amount = 1);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QXmppLogger::MessageTypes)

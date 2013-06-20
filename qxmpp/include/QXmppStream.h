@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Authors:
  *  Manjeet Dahiya
@@ -32,13 +32,13 @@
 
 class QDomElement;
 class QSslSocket;
-class QXmppPacket;
+class QXmppStanza;
 class QXmppStreamPrivate;
 
 /// \brief The QXmppStream class is the base class for all XMPP streams.
 ///
 
-class QXmppStream : public QXmppLoggable
+class QXMPP_EXPORT QXmppStream : public QXmppLoggable
 {
     Q_OBJECT
 
@@ -47,7 +47,7 @@ public:
     ~QXmppStream();
 
     virtual bool isConnected() const;
-    bool sendPacket(const QXmppPacket&);
+    bool sendPacket(const QXmppStanza&);
 
 signals:
     /// This signal is emitted when the stream is connected.
@@ -80,7 +80,6 @@ public slots:
 
 private slots:
     void _q_socketConnected();
-    void _q_socketDisconnected();
     void _q_socketEncrypted();
     void _q_socketError(QAbstractSocket::SocketError error);
     void _q_socketReadyRead();

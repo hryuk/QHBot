@@ -3,7 +3,7 @@
 QHBotCommands::QHBotCommands(QHBotUserManager* UserManager, QObject *parent): QObject(parent)
 {
     this->UserManager=UserManager;
-    this->commands<<"hello"<<"invite"<<"setnick"<<"snooze"<<"list"<<"setquote"<<"loadquote";
+    this->commands<<"hello"<<"invite"<<"setnick"<<"help"<<"list"<<"setquote"<<"loadquote"<<"busy"<<"back"<<"source";
     this->runCmdLoadQuotes();
 }
 
@@ -19,9 +19,7 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
 
     QStringList arg=msg.body().split(" ");
     QString CommandName = arg.at(0);
-    QString from = msg.from();
-    //FIXME: FIX PERMISOS
-    QString fromEmail = from.split("/").at(0);
+    QString from = msg.from().split("/").at(0);
     CommandName.remove(0,1);
 
     arg.removeAt(0);
@@ -32,46 +30,67 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
         qWarning()<<"Comando " + CommandName+ " No Encontrado";
         break;
 
-    case 0://Si recibe hello
+    case 0://hello
         qDebug()<< "Ejecutando commando "+CommandName;
         this->runCmdHello();
         break;
 
-    case 1://Si recibe invite
-        //FIXME: FIX PERMISOS
-        if(!admList.contains(fromEmail)) return;
+    case 1://invite
+        if(!admList.contains(from)) return;
         qDebug()<< "Ejecutando commando "+CommandName;
         this->runCmdInvite(arg);
         break;
 
-    case 2://Si recibe setnick
+    case 2://setnick
         qDebug()<< "Ejecutando commando "+CommandName;
-        this->runCmdSetNick(arg, fromEmail);
+        this->runCmdSetNick(arg,from);
         break;
 
-    case 3:
+    case 3://help
         qDebug()<< "Ejecutando commando "+CommandName;
-        this->runCmdSnoozing(arg,from);
-        break;
+        this->runCmdHelp(from);
+    break;
 
-    case 4:
+    case 4://list
         qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdList(from);
+    break;
 
-    case 5:
+    case 5://setquote
+        /*
         qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdSetQuote(arg);
+        */
+    break;
 
-    case 6:
+    case 6://loadquotes
         qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdLoadQuotes();
+    break;
+
+    case 7://busy
+        qDebug()<<"Ejecutando comando "+CommandName;
+        this->runCmdBusy(from);
+    break;
+
+    case 8://back
+        qDebug()<<"Ejecutando comando "+CommandName;
+        this->runCmdBack(from);
+    break;
+
+    case 9://source
+        qDebug()<<"Ejecutando comando "+CommandName;
+        this->runCmdSource(from);
+    break;
     }
 }
 
 void QHBotCommands::runCmdHello()
 {
     if(this->quotes.isEmpty())
+    {
         emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast","No tengo frases... Que planeas que diga?"));
+    }
     else
     {
         QTime time = QTime::currentTime();
@@ -87,6 +106,7 @@ void QHBotCommands::runCmdInvite(const QStringList &arg)
     rx.setCaseSensitivity(Qt::CaseInsensitive);
     if(arg.length() < 1) return;
     if(!rx.exactMatch(arg.at(0))) return;
+
     if(UserManager->inviteUser(arg.at(0)))
     {
         qDebug()<<arg.at(0)<<" ha sido invitado";
@@ -95,31 +115,57 @@ void QHBotCommands::runCmdInvite(const QStringList &arg)
 }
 void QHBotCommands::runCmdSetNick(const QStringList &arg, const QString &from)
 {
-    if(arg.length() < 2 || UserManager->getUser(arg.at(0)) == NULL) //No esta en la lista? No hacemos nada.
-        return;
 
-    QString jid=arg.at(0); //Si el FIX PERMISOS se elimina, esto podría ser const.
-
-    /* FIXME: FIX PERMISOS */
-    if(!admList.contains(from)){
-        jid = from;
-    }
-    /* END FIXME */
-
-    const QString& newNick=arg.at(1);
+    if(arg.length() < 2 || UserManager->getUser(arg.at(0))==NULL) return;
 
 
-    UserManager->getUser(jid)->setNick(newNick);
+    if(!admList.contains(from) && from!=arg.at(0)) return;
 
-    emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",jid+" es ahora conocido como "+newNick));
+    //Si no es un nick válido, no hacemos nada
+    QRegExp rx("/\\A[a-z_\\-\\[\\]\\\\^{}|`][a-z0-9_\\-\\[\\]\\\\^{}|`]{2,15}\\z");
+    rx.setCaseSensitivity(Qt::CaseInsensitive);
+    if(!rx.exactMatch(arg.at(1))) return;
+
+
+    QString lastNick=UserManager->getUser(arg.at(0))->getNick();
+    UserManager->getUser(arg.at(0))->setNick(arg.at(1));
+
+    emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",lastNick+" es ahora conocido como "+arg.at(1)));
 }
 
-void QHBotCommands::runCmdSnoozing(const QStringList &arg,const QString &from)
+void QHBotCommands::runCmdHelp(const QString &from)
 {
-    if(arg.length() > 0 && (arg.at(0)=="on" || arg.at(0)=="off")){
-        UserManager->getUser(from.split("/").at(0))->setSnooze(arg.at(0)=="on");
-        emit messageRequest(QXmppMessage("", from, "Modo snooze "+arg.at(0)));
+    QStringList help;
+    help<<QString("\n/hello: Hace que el bot salude\n");
+    help<<QString("/help: Muestra este mensaje de ayuda\n");
+    help<<QString("/list: Lista los usuarios suscritos al bot y su estado\n");
+    help<<QString("/source: Muestra donde se aloja el código del bot\n");
+    if(admList.contains(from))
+    {
+        help<<QString("/setnick <email> <nick>: Cambia el nick a un usuario en concreto\n");
+        help<<QString("/invite <email>: Invita a un nuevo usuario\n");
+        help<<QString("/setquote: \n");
+        help<<QString("/loadquote: Carga las frases del archivo quotes.dat\n");
     }
+}
+
+void QHBotCommands::runCmdSource(const QString &from)
+{
+    QString sourceMsg="Código disponible en https://github.com/hzeroo/QHBot";
+
+    emit messageRequest(QXmppMessage("bot@h-sec.org",sourceMsg));
+}
+
+void QHBotCommands::runCmdBusy(const QString &from)
+{
+    UserManager->getUser(from)->setSnooze(true);
+    emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",UserManager->getUser(from)->getNick()+" está ahora ausente"));
+}
+
+void QHBotCommands::runCmdBack(const QString &from)
+{
+    UserManager->getUser(from)->setSnooze(false);
+    emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",UserManager->getUser(from)->getNick()+" ha vuelto"));
 }
 
 void QHBotCommands::runCmdList(const QString &from)
@@ -127,7 +173,12 @@ void QHBotCommands::runCmdList(const QString &from)
     QStringList UserList;
     foreach(QHBotUser* u,UserManager->getUsers())
     {
-        UserList.append(QString("["+u->getNick()+"] ("+u->getJID()+")"));
+        QString jid=u->getJID();
+        QStringList jidChunk;
+        jidChunk<<jid.split("@").at(0);
+        jidChunk<<jid.split("@").at(1).split(jid.split(".").last()).at(0);
+        jidChunk<<jid.split(".").last();
+        UserList.append(QString("["+u->getNick()+"] <"+jidChunk[0]+"[at]"+jidChunk[1]+"[dot]"+jidChunk[2]+"> "+(u->isSnoozing()?"busy":"")));
         UserList.last().insert(0,u->isAvailable()?"[+]":"[-]");
     }
 
@@ -136,13 +187,12 @@ void QHBotCommands::runCmdList(const QString &from)
     emit messageRequest(QXmppMessage("",from,"\n"+UserList.join("\n")));
 }
 
-// FIXME: FIX PERMISOS
 void QHBotCommands::setAdmList(QStringList admList)
 {
-    this->admList = admList;
+    this->admList=admList;
 }
 
-void QHBotCommands::runCmdLoadQuotes() //Load all Quotes on every Hello...
+void QHBotCommands::runCmdLoadQuotes()
 {
     QFile file("quotes.dat");
     QString quote;

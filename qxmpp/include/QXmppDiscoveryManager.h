@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -26,19 +26,24 @@
 
 #include "QXmppClientExtension.h"
 
+class QXmppDataForm;
 class QXmppDiscoveryIq;
+class QXmppDiscoveryManagerPrivate;
 
 /// \brief The QXmppDiscoveryManager class makes it possible to discover information
 /// about other entities as defined by XEP-0030: Service Discovery.
 ///
 /// \ingroup Managers
 
-class QXmppDiscoveryManager : public QXmppClientExtension
+class QXMPP_EXPORT QXmppDiscoveryManager : public QXmppClientExtension
 {
     Q_OBJECT
 
 public:
     QXmppDiscoveryManager();
+    ~QXmppDiscoveryManager();
+
+    QXmppDiscoveryIq capabilities();
 
     QString requestInfo(const QString& jid, const QString& node = "");
     QString requestItems(const QString& jid, const QString& node = "");
@@ -56,10 +61,12 @@ public:
     QString clientType() const;
     void setClientType(const QString&);
 
+    QXmppDataForm clientInfoForm() const;
+    void setClientInfoForm(const QXmppDataForm &form);
+
     /// \cond
     QStringList discoveryFeatures() const;
     bool handleStanza(const QDomElement &element);
-    QXmppDiscoveryIq capabilities();
     /// \endcond
 
 signals:
@@ -70,10 +77,7 @@ signals:
     void itemsReceived(const QXmppDiscoveryIq&);
 
 private:
-    QString m_clientCapabilitiesNode;
-    QString m_clientCategory;
-    QString m_clientType;
-    QString m_clientName;
+    QXmppDiscoveryManagerPrivate *d;
 };
 
 #endif // QXMPPDISCOVERYMANAGER_H

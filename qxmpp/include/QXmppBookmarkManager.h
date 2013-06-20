@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
@@ -35,7 +35,7 @@ class QXmppBookmarkSet;
 /// bookmarks as defined by XEP-0048: Bookmarks.
 ///
 
-class QXmppBookmarkManager : public QXmppClientExtension
+class QXMPP_EXPORT QXmppBookmarkManager : public QXmppClientExtension
 {
     Q_OBJECT
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -28,10 +28,12 @@
 #include "QXmppStanza.h"
 #include "QXmppMucIq.h"
 
+class QXmppPresencePrivate;
+
 /// \brief The QXmppPresence class represents an XMPP presence stanza.
 ///
 /// \ingroup Stanzas
-class QXmppPresence : public QXmppStanza
+class QXMPP_EXPORT QXmppPresence : public QXmppStanza
 {
 public:
     /// This enum is used to describe a presence type.
@@ -47,7 +49,19 @@ public:
         Probe           ///< A request for an entity's current presence; SHOULD be generated only by a server on behalf of a user.
     };
 
-    // XEP-0153: vCard-Based Avatars
+    /// This enum is used to describe an availability status.
+    enum AvailableStatusType
+    {
+        Online = 0,      ///< The entity or resource is online.
+        Away,           ///< The entity or resource is temporarily away.
+        XA,             ///< The entity or resource is away for an extended period.
+        DND,            ///< The entity or resource is busy ("Do Not Disturb").
+        Chat,           ///< The entity or resource is actively interested in chatting.
+        Invisible       ///< obsolete XEP-0018: Invisible Presence
+    };
+
+    /// This enum is used to describe vCard updates as defined by
+    /// XEP-0153: vCard-Based Avatars
     enum VCardUpdateType
     {
         VCardUpdateNone = 0,    ///< Protocol is not supported
@@ -59,23 +73,20 @@ public:
 /// (empty photo element) and mere support for the protocol (empty update child).
     };
 
-    /// \brief The QXmppPresence::Status class represents the status of an XMPP entity.
-    ///
-    /// It stores information such as the "away", "busy" status of a user, or
-    /// a human-readable description.
-
-    class Status
+    /// \cond
+    // deprecated since 0.6.2
+    class QXMPP_EXPORT Status
     {
     public:
         /// This enum is used to describe an availability status.
         enum Type
         {
-            Offline = 0,
-            Online,      ///< The entity or resource is online.
+            Online = 0,  ///< The entity or resource is online.
             Away,        ///< The entity or resource is temporarily away.
             XA,          ///< The entity or resource is away for an extended period.
             DND,         ///< The entity or resource is busy ("Do Not Disturb").
             Chat,        ///< The entity or resource is actively interested in chatting.
+            Invisible    ///< obsolete XEP-0018: Invisible Presence
         };
 
         Status(QXmppPresence::Status::Type type = QXmppPresence::Status::Online,
@@ -90,30 +101,37 @@ public:
         int priority() const;
         void setPriority(int);
 
-        /// \cond
         void parse(const QDomElement &element);
         void toXml(QXmlStreamWriter *writer) const;
-        /// \endcond
 
     private:
-        QString getTypeStr() const;
-        void setTypeFromStr(const QString&);
-
         QXmppPresence::Status::Type m_type;
         QString m_statusText;
         int m_priority;
     };
 
-    QXmppPresence(QXmppPresence::Type type = QXmppPresence::Available,
-        const QXmppPresence::Status& status = QXmppPresence::Status());
+    QXmppPresence::Status Q_DECL_DEPRECATED &status();
+    const QXmppPresence::Status Q_DECL_DEPRECATED &status() const;
+    void Q_DECL_DEPRECATED setStatus(const QXmppPresence::Status&);
+    /// \endcond
+
+    QXmppPresence(QXmppPresence::Type type = QXmppPresence::Available);
+    QXmppPresence(const QXmppPresence &other);
     ~QXmppPresence();
+
+    QXmppPresence& operator=(const QXmppPresence &other);
+
+    AvailableStatusType availableStatusType() const;
+    void setAvailableStatusType(AvailableStatusType type);
+
+    int priority() const;
+    void setPriority(int priority);
 
     QXmppPresence::Type type() const;
     void setType(QXmppPresence::Type);
 
-    QXmppPresence::Status& status();
-    const QXmppPresence::Status& status() const;
-    void setStatus(const QXmppPresence::Status&);
+    QString statusText() const;
+    void setStatusText(const QString& statusText);
 
     /// \cond
     void parse(const QDomElement &element);
@@ -124,8 +142,14 @@ public:
     QXmppMucItem mucItem() const;
     void setMucItem(const QXmppMucItem &item);
 
+    QString mucPassword() const;
+    void setMucPassword(const QString &password);
+
     QList<int> mucStatusCodes() const;
     void setMucStatusCodes(const QList<int> &codes);
+
+    bool isMucSupported() const;
+    void setMucSupported(bool supported);
 
     /// XEP-0153: vCard-Based Avatars
     QByteArray photoHash() const;
@@ -147,30 +171,7 @@ public:
     QStringList capabilityExt() const;
 
 private:
-    QString getTypeStr() const;
-    void setTypeFromStr(const QString&);
-
-    Type m_type;
-    QXmppPresence::Status m_status;
-
-
-    /// XEP-0153: vCard-Based Avatars
-
-    /// m_photoHash: the SHA1 hash of the avatar image data itself (not the base64-encoded version)
-    /// in accordance with RFC 3174
-    QByteArray m_photoHash;
-    VCardUpdateType m_vCardUpdateType;
-
-    // XEP-0115: Entity Capabilities
-    QString m_capabilityHash;
-    QString m_capabilityNode;
-    QByteArray m_capabilityVer;
-    // Legacy XEP-0115: Entity Capabilities
-    QStringList m_capabilityExt;
-
-    // XEP-0045: Multi-User Chat
-    QXmppMucItem m_mucItem;
-    QList<int> m_mucStatusCodes;
+    QSharedDataPointer<QXmppPresencePrivate> d;
 };
 
 #endif // QXMPPPRESENCE_H

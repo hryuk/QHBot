@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -35,13 +35,11 @@ class QXmppClientExtension;
 class QXmppClientPrivate;
 class QXmppPresence;
 class QXmppMessage;
-class QXmppPacket;
 class QXmppIq;
 class QXmppStream;
 
 // managers
 class QXmppDiscoveryIq;
-class QXmppReconnectionManager;
 class QXmppRosterManager;
 class QXmppVCardManager;
 class QXmppVersionManager;
@@ -52,16 +50,16 @@ class QXmppVersionManager;
 
 /// \brief The QXmppClient class is the main class for using QXmpp.
 ///
-/// It provides the user all the required functionality to connect to the server
-/// and perform operations afterwards.
+/// It provides the user all the required functionality to connect to the
+/// server and perform operations afterwards.
 ///
-/// This class will provide the handle/reference to QXmppRosterManager (roster management),
-/// QXmppVCardManager (vCard manager), QXmppReconnectionManager (reconnection
-/// mechanism) and QXmppVersionManager (software version information).
+/// This class will provide the handle/reference to QXmppRosterManager
+/// (roster management), QXmppVCardManager (vCard manager), and
+/// QXmppVersionManager (software version information).
 ///
-/// By default, a reconnection mechanism exists, which makes sure of reconnecting
-/// to the server on disconnections due to an error. User can have a custom
-/// reconnection mechanism as well.
+/// By default, the client will automatically try reconnecting to the server.
+/// You can change this a behaviour using
+/// QXmppConfiguration::setAutoReconnectionEnabled().
 ///
 /// Not all the managers or extensions have been enabled by default. One can
 /// enable/disable the managers using the funtions addExtension() and
@@ -77,7 +75,7 @@ class QXmppVersionManager;
 ///
 /// \ingroup Core
 
-class QXmppClient : public QXmppLoggable
+class QXMPP_EXPORT QXmppClient : public QXmppLoggable
 {
     Q_OBJECT
     Q_ENUMS(Error State)
@@ -107,6 +105,7 @@ public:
     ~QXmppClient();
 
     bool addExtension(QXmppClientExtension* extension);
+    bool insertExtension(int index, QXmppClientExtension* extension);
     bool removeExtension(QXmppClientExtension* extension);
 
     QList<QXmppClientExtension*> extensions();
@@ -139,6 +138,7 @@ public:
     void connectToServer(const QXmppConfiguration&,
                          const QXmppPresence& initialPresence =
                          QXmppPresence());
+    bool isAuthenticated() const;
     bool isConnected() const;
 
     QXmppPresence clientPresence() const;
@@ -155,9 +155,6 @@ public:
     QXmppRosterManager& rosterManager();
     QXmppVCardManager& vCardManager();
     QXmppVersionManager& versionManager();
-
-    QXmppReconnectionManager* reconnectionManager();
-    bool setReconnectionManager(QXmppReconnectionManager*);
 
 signals:
 
@@ -217,25 +214,20 @@ signals:
     /// This signal is emitted when the client state changes.
     void stateChanged(QXmppClient::State state);
 
-    /// \cond
-    // Deprecated in release 0.3.0
-    // Use QXmppDiscoveryManager::informationReceived(const QXmppDiscoveryIq&)
-    // Notifies that an XMPP service discovery iq stanza is received.
-    void discoveryIqReceived(const QXmppDiscoveryIq&);
-    /// \endcond
-
 public slots:
     void connectToServer(const QString &jid,
                          const QString &password);
     void disconnectFromServer();
-    bool sendPacket(const QXmppPacket&);
+    bool sendPacket(const QXmppStanza&);
     void sendMessage(const QString& bareJid, const QString& message);
 
 private slots:
     void _q_elementReceived(const QDomElement &element, bool &handled);
+    void _q_reconnect();
     void _q_socketStateChanged(QAbstractSocket::SocketState state);
     void _q_streamConnected();
     void _q_streamDisconnected();
+    void _q_streamError(QXmppClient::Error error);
 
 private:
     QXmppClientPrivate * const d;

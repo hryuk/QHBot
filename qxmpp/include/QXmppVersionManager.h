@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -27,18 +27,21 @@
 #include "QXmppClientExtension.h"
 
 class QXmppVersionIq;
+class QXmppVersionManagerPrivate;
 
 /// \brief The QXmppVersionManager class makes it possible to request for
 /// the software version of an entity as defined by XEP-0092: Software Version.
 ///
 /// \ingroup Managers
 
-class QXmppVersionManager : public QXmppClientExtension
+class QXMPP_EXPORT QXmppVersionManager : public QXmppClientExtension
 {
     Q_OBJECT
 
 public:
     QXmppVersionManager();
+    ~QXmppVersionManager();
+
     QString requestVersion(const QString& jid);
 
     void setClientName(const QString&);
@@ -59,9 +62,7 @@ signals:
     void versionReceived(const QXmppVersionIq&);
 
 private:
-    QString m_clientName;
-    QString m_clientVersion;
-    QString m_clientOs;
+    QXmppVersionManagerPrivate *d;
 };
 
 #endif // QXMPPVERSIONMANAGER_H

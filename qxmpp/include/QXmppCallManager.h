@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
@@ -50,7 +50,7 @@ class QXmppRtpVideoChannel;
 ///
 /// \note THIS API IS NOT FINALIZED YET
 
-class QXmppCall : public QXmppLoggable
+class QXMPP_EXPORT QXmppCall : public QXmppLoggable
 {
     Q_OBJECT
     Q_ENUMS(Direction State)
@@ -157,7 +157,7 @@ private:
 ///
 /// \ingroup Managers
 
-class QXmppCallManager : public QXmppClientExtension
+class QXMPP_EXPORT QXmppCallManager : public QXmppClientExtension
 {
     Q_OBJECT
 
@@ -181,6 +181,7 @@ signals:
     /// To refuse the call, invoke the call's QXmppCall::hangup() method.
     void callReceived(QXmppCall *call);
 
+    /// This signal is emitted when a call (incoming or outgoing) is started.
     void callStarted(QXmppCall *call);
 
 public slots:

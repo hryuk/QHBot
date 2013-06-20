@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
@@ -38,39 +38,53 @@ class QXmppRtpVideoChannelPrivate;
 /// \brief The QXmppRtpPacket class represents an RTP packet.
 ///
 
-class QXmppRtpPacket
+class QXMPP_EXPORT QXmppRtpPacket
 {
 public:
     bool decode(const QByteArray &ba);
     QByteArray encode() const;
     QString toString() const;
 
+    ///  RTP version.
     quint8 version;
+    /// Marker flag.
     bool marker;
+    /// Payload type.
     quint8 type;
+    /// Synchronization source.
     quint32 ssrc;
+    /// Contributing sources.
     QList<quint32> csrc;
+    /// Sequence number.
     quint16 sequence;
+    /// Timestamp.
     quint32 stamp;
+    /// Raw payload data.
     QByteArray payload;
 };
 
-class QXmppRtpChannel
+class QXMPP_EXPORT QXmppRtpChannel
 {
 public:
     QXmppRtpChannel();
 
+    /// Closes the RTP channel.
     virtual void close() = 0;
+
+    /// Returns the mode in which the channel has been opened.
     virtual QIODevice::OpenMode openMode() const = 0;
+
     QList<QXmppJinglePayloadType> localPayloadTypes();
     void setRemotePayloadTypes(const QList<QXmppJinglePayloadType> &remotePayloadTypes);
 
 protected:
-    virtual void payloadTypesChanged();
+    /// \cond
+    virtual void payloadTypesChanged() = 0;
 
     QList<QXmppJinglePayloadType> m_incomingPayloadTypes;
     QList<QXmppJinglePayloadType> m_outgoingPayloadTypes;
     bool m_outgoingPayloadNumbered;
+    /// \endcond
 };
 
 /// \brief The QXmppRtpAudioChannel class represents an RTP audio channel to a remote party.
@@ -80,7 +94,7 @@ protected:
 ///
 /// \note THIS API IS NOT FINALIZED YET
 
-class QXmppRtpAudioChannel : public QIODevice, public QXmppRtpChannel
+class QXMPP_EXPORT QXmppRtpAudioChannel : public QIODevice, public QXmppRtpChannel
 {
     Q_OBJECT
     Q_ENUMS(Tone)
@@ -109,16 +123,13 @@ public:
     QXmppRtpAudioChannel(QObject *parent = 0);
     ~QXmppRtpAudioChannel();
 
-    QXmppJinglePayloadType payloadType() const;
-
-    /// \cond
     qint64 bytesAvailable() const;
     void close();
     bool isSequential() const;
     QIODevice::OpenMode openMode() const;
+    QXmppJinglePayloadType payloadType() const;
     qint64 pos() const;
     bool seek(qint64 pos);
-    /// \endcond
 
 signals:
     /// \brief This signal is emitted when a datagram needs to be sent.
@@ -172,16 +183,28 @@ private:
 ///
 /// \note THIS API IS NOT FINALIZED YET
 
-class QXmppVideoFrame
+class QXMPP_EXPORT QXmppVideoFrame
 {
 public:
+    /// This enum describes a pixel format.
     enum PixelFormat {
-        Format_Invalid = 0,
-        Format_RGB32 = 3,
-        Format_RGB24 = 4,
-        Format_YUV420P = 18,
-        Format_UYVY = 20,
-        Format_YUYV = 21,
+        Format_Invalid = 0,     ///< The frame is invalid.
+        Format_RGB32 = 3,       ///< The frame stored using a 32-bit RGB format (0xffRRGGBB).
+        Format_RGB24 = 4,       ///< The frame is stored using a 24-bit RGB format (8-8-8).
+        Format_YUV420P = 18,    ///< The frame is stored using an 8-bit per component planar
+                                ///< YUV format with the U and V planes horizontally and
+                                ///< vertically sub-sampled, i.e. the height and width of the
+                                ///< U and V planes are half that of the Y plane.
+        Format_UYVY = 20,       ///< The frame is stored using an 8-bit per component packed
+                                ///< YUV format with the U and V planes horizontally
+                                ///< sub-sampled (U-Y-V-Y), i.e. two horizontally adjacent
+                                ///< pixels are stored as a 32-bit macropixel which has a Y
+                                ///< value for each pixel and common U and V values.
+        Format_YUYV = 21,       ///< The frame is stored using an 8-bit per component packed
+                                ///< YUV format with the U and V planes horizontally
+                                ///< sub-sampled (Y-U-Y-V), i.e. two horizontally adjacent
+                                ///< pixels are stored as a 32-bit macropixel which has a Y
+                                ///< value for each pixel and common U and V values.
     };
 
     QXmppVideoFrame();
@@ -205,7 +228,7 @@ private:
     int m_width;
 };
 
-class QXmppVideoFormat
+class QXMPP_EXPORT QXmppVideoFormat
 {
 public:
     int frameHeight() const {
@@ -251,13 +274,16 @@ private:
 ///
 /// \note THIS API IS NOT FINALIZED YET
 
-class QXmppRtpVideoChannel : public QXmppLoggable, public QXmppRtpChannel
+class QXMPP_EXPORT QXmppRtpVideoChannel : public QXmppLoggable, public QXmppRtpChannel
 {
     Q_OBJECT
 
 public:
     QXmppRtpVideoChannel(QObject *parent = 0);
     ~QXmppRtpVideoChannel();
+
+    void close();
+    QIODevice::OpenMode openMode() const;
 
     // incoming stream
     QXmppVideoFormat decoderFormat() const;
@@ -268,9 +294,6 @@ public:
     void setEncoderFormat(const QXmppVideoFormat &format);
     void writeFrame(const QXmppVideoFrame &frame);
 
-    QIODevice::OpenMode openMode() const;
-    void close();
-
 signals:
     /// \brief This signal is emitted when a datagram needs to be sent.
     void sendDatagram(const QByteArray &ba);
@@ -279,7 +302,9 @@ public slots:
     void datagramReceived(const QByteArray &ba);
 
 protected:
+    /// \cond
     void payloadTypesChanged();
+    /// \endcond
 
 private:
     friend class QXmppRtpVideoChannelPrivate;

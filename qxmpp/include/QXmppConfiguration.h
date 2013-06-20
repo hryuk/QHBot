@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -26,8 +26,13 @@
 #define QXMPPCONFIGURATION_H
 
 #include <QString>
-#include <QNetworkProxy>
-#include <QSslCertificate>
+#include <QSharedDataPointer>
+
+#include "QXmppGlobal.h"
+
+class QNetworkProxy;
+class QSslCertificate;
+class QXmppConfigurationPrivate;
 
 /// \brief The QXmppConfiguration class holds configuration options.
 ///
@@ -40,7 +45,7 @@
 /// etc..
 ///
 
-class QXmppConfiguration
+class QXMPP_EXPORT QXmppConfiguration
 {
 public:
     /// An enumeration for type of the Security Mode that is stream is encrypted or not.
@@ -67,22 +72,11 @@ public:
     /// The server may or may not allow any particular mechanism. So depending
     /// upon the availability of mechanisms on the server the library will choose
     /// a mechanism.
-    enum SASLAuthMechanism
-    {
-        SASLPlain = 0,         ///< Plain
-        SASLDigestMD5,         ///< Digest MD5 (default)
-        SASLAnonymous,         ///< Anonymous
-        SASLXFacebookPlatform, ///< Facebook Platform
-    };
-
-    /// An enumeration for stream compression methods.
-    enum CompressionMethod
-    {
-        ZlibCompression = 0 ///< zlib compression
-    };
 
     QXmppConfiguration();
+    QXmppConfiguration(const QXmppConfiguration &other);
     ~QXmppConfiguration();
+    QXmppConfiguration& operator=(const QXmppConfiguration &other);
 
     QString host() const;
     void setHost(const QString&);
@@ -113,6 +107,12 @@ public:
     QString facebookAppId() const;
     void setFacebookAppId(const QString&);
 
+    QString googleAccessToken() const;
+    void setGoogleAccessToken(const QString &accessToken);
+
+    QString windowsLiveAccessToken() const;
+    void setWindowsLiveAccessToken(const QString &accessToken);
+
     bool autoAcceptSubscriptions() const;
     void setAutoAcceptSubscriptions(bool);
 
@@ -121,6 +121,9 @@ public:
 
     bool useSASLAuthentication() const;
     void setUseSASLAuthentication(bool);
+
+    bool useNonSASLAuthentication() const;
+    void setUseNonSASLAuthentication(bool);
 
     bool ignoreSslErrors() const;
     void setIgnoreSslErrors(bool);
@@ -131,8 +134,8 @@ public:
     QXmppConfiguration::NonSASLAuthMechanism nonSASLAuthMechanism() const;
     void setNonSASLAuthMechanism(QXmppConfiguration::NonSASLAuthMechanism);
 
-    QXmppConfiguration::SASLAuthMechanism sASLAuthMechanism() const;
-    void setSASLAuthMechanism(QXmppConfiguration::SASLAuthMechanism);
+    QString saslAuthMechanism() const;
+    void setSaslAuthMechanism(const QString &mechanism);
 
     QNetworkProxy networkProxy() const;
     void setNetworkProxy(const QNetworkProxy& proxy);
@@ -147,43 +150,7 @@ public:
     void setCaCertificates(const QList<QSslCertificate> &);
 
 private:
-    QString m_host;
-    int m_port;
-    QString m_user;
-    QString m_password;
-    QString m_domain;
-    QString m_resource;
-
-    // Facebook
-    QString m_facebookAccessToken;
-    QString m_facebookAppId;
-
-    // default is false
-    bool m_autoAcceptSubscriptions;
-    // default is true
-    bool m_sendIntialPresence;
-    // default is true
-    bool m_sendRosterRequest;
-    // interval in seconds, if zero won't ping
-    int m_keepAliveInterval;
-    // interval in seconds, if zero won't timeout
-    int m_keepAliveTimeout;
-    // will keep reconnecting if disconnected, default is true
-    bool m_autoReconnectionEnabled;
-    bool m_useSASLAuthentication; ///< flag to specify what authentication system
-                                  ///< to be used
-                                ///< defualt is true and use SASL
-                                ///< false would use NonSASL if available
-    // default is true
-    bool m_ignoreSslErrors;
-
-    StreamSecurityMode m_streamSecurityMode;
-    NonSASLAuthMechanism m_nonSASLAuthMechanism;
-    SASLAuthMechanism m_SASLAuthMechanism;
-
-    QNetworkProxy m_networkProxy;
-
-    QList<QSslCertificate> m_caCertificates;
+    QSharedDataPointer<QXmppConfigurationPrivate> d;
 };
 
 #endif // QXMPPCONFIGURATION_H

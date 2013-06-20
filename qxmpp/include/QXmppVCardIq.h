@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
@@ -30,7 +30,140 @@
 #include <QMap>
 #include <QDomElement>
 
-class QImage;
+class QXmppVCardAddressPrivate;
+class QXmppVCardEmailPrivate;
+class QXmppVCardPhonePrivate;
+class QXmppVCardIqPrivate;
+
+/// \brief Represent a vCard address.
+
+class QXMPP_EXPORT QXmppVCardAddress
+{
+public:
+    /// \brief Describes e-mail address types.
+    enum TypeFlag {
+        None        = 0x0,
+        Home        = 0x1,
+        Work        = 0x2,
+        Postal      = 0x4,
+        Preferred   = 0x8
+    };
+    Q_DECLARE_FLAGS(Type, TypeFlag)
+
+    QXmppVCardAddress();
+    QXmppVCardAddress(const QXmppVCardAddress &other);
+    ~QXmppVCardAddress();
+
+    QXmppVCardAddress& operator=(const QXmppVCardAddress &other);
+
+    QString country() const;
+    void setCountry(const QString &country);
+
+    QString locality() const;
+    void setLocality(const QString &locality);
+
+    QString postcode() const;
+    void setPostcode(const QString &postcode);
+
+    QString region() const;
+    void setRegion(const QString &region);
+
+    QString street() const;
+    void setStreet(const QString &street);
+
+    Type type() const;
+    void setType(Type type);
+
+    /// \cond
+    void parse(const QDomElement &element);
+    void toXml(QXmlStreamWriter *stream) const;
+    /// \endcond
+
+private:
+    QSharedDataPointer<QXmppVCardAddressPrivate> d;
+};
+
+/// \brief Represents a vCard e-mail address.
+
+class QXMPP_EXPORT QXmppVCardEmail
+{
+public:
+    /// \brief Describes e-mail address types.
+    enum TypeFlag {
+        None        = 0x0,
+        Home        = 0x1,
+        Work        = 0x2,
+        Internet    = 0x4,
+        Preferred   = 0x8,
+        X400        = 0x10
+    };
+    Q_DECLARE_FLAGS(Type, TypeFlag)
+
+    QXmppVCardEmail();
+    QXmppVCardEmail(const QXmppVCardEmail &other);
+    ~QXmppVCardEmail();
+
+    QXmppVCardEmail& operator=(const QXmppVCardEmail &other);
+
+    QString address() const;
+    void setAddress(const QString &address);
+
+    Type type() const;
+    void setType(Type type);
+
+    /// \cond
+    void parse(const QDomElement &element);
+    void toXml(QXmlStreamWriter *stream) const;
+    /// \endcond
+
+private:
+    QSharedDataPointer<QXmppVCardEmailPrivate> d;
+};
+
+/// \brief Represents a vCard phone number.
+
+class QXMPP_EXPORT QXmppVCardPhone
+{
+public:
+    /// \brief Describes phone number types.
+    enum TypeFlag {
+        None        = 0x0,
+        Home        = 0x1,
+        Work        = 0x2,
+        Voice       = 0x4,
+        Fax         = 0x8,
+        Pager       = 0x10,
+        Messaging   = 0x20,
+        Cell        = 0x40,
+        Video       = 0x80,
+        BBS         = 0x100,
+        Modem       = 0x200,
+        ISDN        = 0x400,
+        PCS         = 0x800,
+        Preferred   = 0x1000
+    };
+    Q_DECLARE_FLAGS(Type, TypeFlag)
+
+    QXmppVCardPhone();
+    QXmppVCardPhone(const QXmppVCardPhone &other);
+    ~QXmppVCardPhone();
+
+    QXmppVCardPhone& operator=(const QXmppVCardPhone &other);
+
+    QString number() const;
+    void setNumber(const QString &number);
+
+    Type type() const;
+    void setType(Type type);
+
+    /// \cond
+    void parse(const QDomElement &element);
+    void toXml(QXmlStreamWriter *stream) const;
+    /// \endcond
+
+private:
+    QSharedDataPointer<QXmppVCardPhonePrivate> d;
+};
 
 /// \brief Represents the XMPP vCard.
 ///
@@ -42,13 +175,20 @@ class QImage;
 /// field to this class.
 ///
 
-class QXmppVCardIq : public QXmppIq
+class QXMPP_EXPORT QXmppVCardIq : public QXmppIq
 {
 public:
     QXmppVCardIq(const QString& bareJid = "");
+    QXmppVCardIq(const QXmppVCardIq &other);
+    ~QXmppVCardIq();
+
+    QXmppVCardIq& operator=(const QXmppVCardIq &other);
 
     QDate birthday() const;
     void setBirthday(const QDate &birthday);
+
+    QString description() const;
+    void setDescription(const QString &description);
 
     QString email() const;
     void setEmail(const QString&);
@@ -77,6 +217,15 @@ public:
     QString url() const;
     void setUrl(const QString&);
 
+    QList<QXmppVCardAddress> addresses() const;
+    void setAddresses(const QList<QXmppVCardAddress> &addresses);
+
+    QList<QXmppVCardEmail> emails() const;
+    void setEmails(const QList<QXmppVCardEmail> &emails);
+
+    QList<QXmppVCardPhone> phones() const;
+    void setPhones(const QList<QXmppVCardPhone> &phones);
+
     /// \cond
     static bool isVCard(const QDomElement &element);
     /// \endcond
@@ -88,18 +237,7 @@ protected:
     /// \endcond
 
 private:
-    QDate m_birthday;
-    QString m_email;
-    QString m_firstName;
-    QString m_fullName;
-    QString m_lastName;
-    QString m_middleName;
-    QString m_nickName;
-    QString m_url;
-
-    // not as 64 base
-    QByteArray m_photo;
-    QString m_photoType;
+    QSharedDataPointer<QXmppVCardIqPrivate> d;
 };
 
 #endif // QXMPPVCARDIQ_H

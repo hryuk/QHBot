@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2011 The QXmpp developers
+ * Copyright (C) 2008-2012 The QXmpp developers
  *
  * Authors:
  *  Manjeet Dahiya
@@ -29,11 +29,11 @@
 #include "QXmppIq.h"
 
 /// \brief The QXmppBindIq class represents an IQ used for resource
-/// binding as defined by RFC 5921.
+/// binding as defined by RFC 3921.
 ///
 /// \ingroup Stanzas
 
-class QXmppBindIq : public QXmppIq
+class QXMPP_EXPORT QXmppBindIq : public QXmppIq
 {
 public:
     QString jid() const;
