@@ -76,6 +76,11 @@ void QHBotUserManager::updateUserPresence(const QString &bareJid, const QString 
     user->setPresence(resource,RosterManager->getPresence(bareJid,resource));
 }
 
+void QHBotUserManager::updateUserSnoozeStatus(QString jid,bool snoozing)
+{
+    this->getUser(jid)->setSnooze(snoozing);
+}
+
 bool QHBotUserManager::inviteUser(QString jid)
 {
     return RosterManager->subscribe(jid);

@@ -25,8 +25,7 @@ win32 {
     LIBS += -L$$quote($$_PRO_FILE_PWD_/qxmpp/lib) -lqxmpp0
 }
 
-unix
-{
+unix{
     LIBS += -lqxmpp0
 }
 

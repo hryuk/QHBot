@@ -27,7 +27,7 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
     vCardManager().setClientVCard(vCard);
 
     /*
-    connect(UserManager,SIGNAL(requestSendRosterIq(QXmppIq*)),this,SLOT(sendRosterIq(QXmppIq*)));
+        connect(UserManager,SIGNAL(requestSendRosterIq(QXmppIq*)),this,SLOT(sendRosterIq(QXmppIq*)));
     */
 }
 
@@ -81,6 +81,13 @@ void QHBot::messageReceived(const QXmppMessage& message)
         }
         else
         {
+            /* Si el usuario está ausente, cambiamos su estado a activo */
+            if(UserManager->getUser(from)->isSnoozing())
+            {
+                emit requestBroadcast(QXmppMessage("bot@h-sec.org","broadcast",UserManager->getUser(from)->getNick()+" ha vuelto"));
+                UserManager->updateUserSnoozeStatus(from,false);
+            }
+
             emit requestBroadcast(message);
         }
     }

@@ -2,7 +2,6 @@
 #include <QXmppClient.h>
 #include <QXmppLogger.h>
 #include <QSettings>
-
 #include "qhbot.h"
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)

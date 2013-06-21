@@ -28,7 +28,7 @@ signals:
       texto a un usuario. Si Broadcast es
       **/
     void messageRequest(const QXmppMessage& msg);
-    
+
 public slots:
     /**
       \brief Determina si un mensaje contiene un comando ejecutable por el bot.

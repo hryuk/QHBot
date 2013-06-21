@@ -42,6 +42,8 @@ public slots:
     void removeUser(QString jid);
     QHBotGroup& addGroup(QString name);
     void removeGroup(QString name);
+    void updateUserSnoozeStatus(QString jid,bool snoozing);
+
 private slots:
     void addMemberToGroup(QHBotUser &user,QHBotGroup& grupo);
     void delMemberToGroup(QHBotUser &user,QHBotGroup& grupo);

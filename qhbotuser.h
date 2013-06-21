@@ -39,6 +39,7 @@ private:
     
 signals:
     void nickChange(const QString& jid,const QString& newNickName);
+    void statusChanged(bool snoozing);
     
 public slots:
     void setLastResourceUsed(QString resourceName);
