@@ -45,18 +45,9 @@ public slots:
     void setAdmList(QStringList admList);
 
 private slots:
-    void runCmdHello();
     void runCmdInvite(const QStringList &arg);
-    void runCmdSetNick(const QStringList &arg, const QString &from);
     void runCmdHelp(const QString &from);
-    void runCmdList(const QString &from);
-    void runCmdSetQuote(const QStringList &arg);
-    void runCmdLoadQuotes();
-    void runCmdBusy(const QString &from);
-    void runCmdBack(const QString &from);
-    void runCmdSource(const QString &from);
-    void runCmdNick(const QStringList &arg, const QString &from);
-    
+    void runCmdList(const QString &from);  
 };
 
 #endif // QHBOTCOMMANDS_H

@@ -16,8 +16,7 @@ SOURCES += main.cpp \
     qhbot.cpp \
     qhbotuser.cpp \
     qhbotusermanager.cpp \
-    qhbotcommands.cpp \
-    qhbotgroup.cpp
+    qhbotcommands.cpp
 
 INCLUDEPATH += $$quote(qxmpp/include)
 
@@ -33,8 +32,7 @@ HEADERS += \
     qhbot.h \
     qhbotuser.h \
     qhbotusermanager.h \
-    qhbotcommands.h \
-    qhbotgroup.h
+    qhbotcommands.h
 
 RESOURCES += \
     resource.qrc

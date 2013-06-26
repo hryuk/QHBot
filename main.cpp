@@ -59,5 +59,3 @@ int main(int argc,char* argv[])
     /* FIXME: FIX PERMISOS */
     return a.exec();
 }
-
-

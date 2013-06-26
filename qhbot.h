@@ -90,10 +90,4 @@ signals:
     void commandReceived(const QXmppMessage&);
 };
 
-
-
-
-
-
-
 #endif // QHBOT_H

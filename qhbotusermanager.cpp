@@ -6,79 +6,84 @@ QHBotUserManager::QHBotUserManager(QXmppRosterManager* RosterManager, QObject *p
     this->RosterManager=RosterManager;
     connect(RosterManager,SIGNAL(presenceChanged(const QString&,const QString&)),this,SLOT(updateUserPresence(const QString&,const QString&)));
     connect(RosterManager,SIGNAL(rosterReceived ()),this,SLOT(populateUsers()));
-    //Roster update y push
     connect(RosterManager,SIGNAL(itemAdded(const QString&)),this,SLOT(addUser(const QString&)));
-    connect(RosterManager,SIGNAL(itemChanged(const QString&)),this,SLOT(changeUser(const QString&)));
-    connect(RosterManager,SIGNAL(itemRemoved(const QString&)),this,SLOT(deleteUser(const QString&)));
-
-    this->initialized=false;
+    connect(RosterManager,SIGNAL(itemRemoved(const QString&)),this,SLOT(removeUser(const QString&)));
 }
 
 void QHBotUserManager::populateUsers()
 {
-    if(initialized) return;
+    foreach(QHBotUser* user,this->users)
+    {
+        user->deleteLater();
+    }
+    users.clear();
 
     foreach(QString jid,RosterManager->getRosterBareJids())
     {
-        //FIXME: "limpiar" jid?
-        QXmppRosterIq::Item item=RosterManager->getRosterEntry(jid);
-        QHBotUser* user=new QHBotUser(item,*this);
-        //Aqui se rellena la lista de usuarios, no se recivio todavia la presencia de los usuarios
-        /*
-        //Guardo la presencia de todos los usuarios
-        foreach(QString resourceName,RosterManager->getResources(jid))
-        {
-            user->setPresence(resourceName,RosterManager->getPresence(jid,resourceName));
-        }*/
-
-        connect(user,SIGNAL(nickChange(const QString&,const QString&)),this,SLOT(updateNick(const QString&,const QString&)));
-        this->users.append(user);
+        users.append(new QHBotUser(jid));
     }
-    foreach(QHBotGroup* grupo,groups){
-        qDebug()<<"groupName: "+grupo->getName()+"\n";
-    }
-
-    initialized=true;
-}
-
-void QHBotUserManager::addUser(const QString &bareJid)
-{
-    //FIXME: eliminar el this, QHBot user no puede tener acceso al UserManager
-    QHBotUser* user=new QHBotUser(RosterManager->getRosterEntry(bareJid),*this);
-
-    connect(user,SIGNAL(nickChange(const QString&,const QString&)),this,SLOT(updateNick(const QString&,const QString&)));
-    this->users.append(user);
-}
-
-void QHBotUserManager::changeUser(const QString &bareJid)
-{
-}
-
-void QHBotUserManager::deleteUser(const QString &bareJid)
-{
-    QHBotUser* user=getUser(bareJid);
-    if(!user) return;
-
-    this->users.removeOne(user);
-    user->deleteLater();
-}
-
-void QHBotUserManager::updateNick(const QString& bareJid,const QString& newNick)
-{
-    //qDebug()<<"Update Nick!";
-    RosterManager->renameItem(bareJid,newNick);
 }
 
 void QHBotUserManager::updateUserPresence(const QString &bareJid, const QString &resource)
 {
-    QHBotUser* user=this->getUser(bareJid);
+    QHBotUser* user=getUser(bareJid);
     if(user==0) return;
-    user->setPresence(resource,RosterManager->getPresence(bareJid,resource));
+
+    qDebug()<<"CAMBIO PRESENCIA!!!";
+
+    QXmppPresence presence=RosterManager->getPresence(bareJid,resource);
+    if(presence.type()!=QXmppPresence::Available)
+    {
+        if(user->resources.contains(resource))
+        {
+            qDebug()<<"1!!!";
+            user->setPresence(resource,QHBotUser::Offline);
+        }
+        else
+        {
+            qDebug()<<"2!!!";
+            user->resources.insert(resource,QHBotUser::Offline);
+        }
+        return;
+    }
+
+    switch(presence.availableStatusType())
+    {
+        case QXmppPresence::Status::Online:
+        case QXmppPresence::Status::Chat:
+            if(user->resources.contains(resource))
+            {
+                qDebug()<<"3!!!";
+                user->setPresence(resource,QHBotUser::Online);
+            }
+            else
+            {
+                qDebug()<<"4!!!";
+                user->resources.insert(resource,QHBotUser::Online);
+            }
+        break;
+
+        case QXmppPresence::Status::Away:
+        case QXmppPresence::Status::DND:
+        case QXmppPresence::Status::Invisible:
+            if(user->resources.contains(resource))
+            {
+                qDebug()<<"5!!!";
+                user->setPresence(resource,QHBotUser::Offline);
+            }
+            else
+            {
+                qDebug()<<"6!!!";
+                user->resources.insert(resource,QHBotUser::Offline);
+            }
+        break;
+    }
 }
 
-void QHBotUserManager::updateUserSnoozeStatus(QString jid,bool snoozing)
+void QHBotUserManager::addUser(const QString &bareJid)
 {
-    this->getUser(jid)->setSnooze(snoozing);
+    QHBotUser* user=new QHBotUser(bareJid);
+    this->users.append(user);
 }
 
 bool QHBotUserManager::inviteUser(QString jid)
@@ -86,16 +91,17 @@ bool QHBotUserManager::inviteUser(QString jid)
     return RosterManager->subscribe(jid);
 }
 
-void QHBotUserManager::removeUser(QHBotUser &user)
+void QHBotUserManager::removeUser(const QString &bareJid)
 {
-    RosterManager->unsubscribe(user.getJID());
-    //FIXME: eliminar de la lista de users
-}
+    RosterManager->unsubscribe(bareJid);
 
-void QHBotUserManager::removeUser(QString jid)
-{
-    RosterManager->unsubscribe(jid);
-    //FIXME: eliminar de la lista de users
+    foreach(QHBotUser* user,this->users)
+    {
+        if(user->getJID()==bareJid)
+        {
+            users.removeOne(user);
+        }
+    }
 }
 
 QHBotUser* QHBotUserManager::getUser(QString jid)
@@ -114,49 +120,4 @@ QHBotUser* QHBotUserManager::getUser(QString jid)
 QList<QHBotUser*> QHBotUserManager::getUsers()
 {
     return this->users;
-}
-QHBotGroup* QHBotUserManager::getGroup(QString name){
-    foreach(QHBotGroup* group,this->groups)
-    {
-        if(group->getName()==name)
-        {
-            return group;
-        }
-    }
-    return 0;
-}
-
-QList<QHBotGroup*> QHBotUserManager::getGroups(){
-    return QList<QHBotGroup*>();
-}
-QHBotGroup& QHBotUserManager::addGroup(QString name){
-    QHBotGroup* grupo;
-    if(!(grupo = getGroup(name))){
-        grupo = new QHBotGroup(name,this);
-        //Conecto con los slot de añadir y borrar grupos del roster
-        connect(grupo,SIGNAL(memberAdded(QHBotUser&,QHBotGroup&)),this,SLOT(addMemberToGroup(QHBotUser&,QHBotGroup&)));
-        connect(grupo,SIGNAL(memberDeleted(QHBotUser&,QHBotGroup&)),this,SLOT(delMemberToGroup(QHBotUser&,QHBotGroup&)));
-        groups.append(grupo);
-    }
-    return *grupo;
-}
-
-void QHBotUserManager::removeGroup(QString name){
-    QHBotGroup* grupo = 0;
-    if((grupo = getGroup(name))){
-        groups.removeOne(grupo);
-        delete grupo;
-    }
-}
-void QHBotUserManager::addMemberToGroup(QHBotUser &user, QHBotGroup &grupo){
-    QXmppRosterIq::Item item = RosterManager->getRosterEntry(user.getJID());
-    QSet<QString> grupos = item.groups();
-    grupos.insert(grupo.getName());
-    item.setGroups(grupos);
-}
-void QHBotUserManager::delMemberToGroup(QHBotUser &user, QHBotGroup &grupo){
-    QXmppRosterIq::Item item = RosterManager->getRosterEntry(user.getJID());
-    QSet<QString> grupos = item.groups();
-    grupos.remove(grupo.getName());
-    item.setGroups(grupos);
 }

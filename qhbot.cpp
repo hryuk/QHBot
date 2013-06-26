@@ -17,18 +17,7 @@ QHBot::QHBot(QObject *parent): QXmppClient(parent)
     vCard.setFirstName("Claptrap");
     vCard.setLastName("Claptrap");
     vCard.setUrl("http://foro.h-sec.org");
-
-    QFile filePhoto(":/res/avatar.png");
-    filePhoto.open(QIODevice::ReadOnly);
-    QByteArray photoData=filePhoto.readAll();
-    filePhoto.close();
-
-    vCard.setPhoto(photoData);
     vCardManager().setClientVCard(vCard);
-
-    /*
-        connect(UserManager,SIGNAL(requestSendRosterIq(QXmppIq*)),this,SLOT(sendRosterIq(QXmppIq*)));
-    */
 }
 
 QHBot::~QHBot()
@@ -36,22 +25,10 @@ QHBot::~QHBot()
 
 }
 
-// FIXME: FIX PERMISOS
 void QHBot::setAdminList(QStringList admList)
 {
     this->Commands->setAdmList(admList);
 }
-
-/*
-void QHBot::sendRosterIq(QXmppIq* iq)
-{
-    iq->setTo(this->configuration().domain());
-    printf("\n");
-    this->sendPacket(*iq);
-    printf("\n");
-    delete iq;
-}
-*/
 
 void QHBot::messageReceived(const QXmppMessage& message)
 {
@@ -81,13 +58,6 @@ void QHBot::messageReceived(const QXmppMessage& message)
         }
         else
         {
-            /* Si el usuario está ausente, cambiamos su estado a activo */
-            if(UserManager->getUser(from)->isSnoozing())
-            {
-                emit requestBroadcast(QXmppMessage("bot@h-sec.org","broadcast",UserManager->getUser(from)->getNick()+" ha vuelto"));
-                UserManager->updateUserSnoozeStatus(from,false);
-            }
-
             emit requestBroadcast(message);
         }
     }
@@ -117,24 +87,24 @@ void QHBot::sendBroadcast(const QXmppMessage &msg)
 
     /* Obtenemos Nick y Jid del usuario remitente */
     QString JidFrom;
-    QString NickFrom;
+    QString NameFrom;
     if(msg.from()=="bot@h-sec.org")
     {
         JidFrom="bot@h-sec.org";
-        NickFrom="[Claptrap]";
+        NameFrom="[Claptrap]";
     }
     else
     {
         QHBotUser* UserFrom=UserManager->getUser(msg.from().mid(0,msg.from().indexOf('/')));
         JidFrom=UserFrom->getJID();
-        NickFrom=UserFrom->getNick();
+        NameFrom=UserFrom->getJID();
     }
 
     /* Recorremos la lista de usuarios*/
     foreach(QHBotUser* UserTo,UserManager->getUsers())
     {
         /* Para reenviar, usuario tiene que estar conectado y no ser el remitente */
-        if(UserTo->isAvailable() && UserTo->getJID()!=JidFrom && !UserTo->isSnoozing())
+        if(UserTo->isAvailable() && UserTo->getJID()!=JidFrom)
         {
             qDebug()<<"Reenviando a "+UserTo->getJID();
 
@@ -142,7 +112,7 @@ void QHBot::sendBroadcast(const QXmppMessage &msg)
             sleep.msleep(100);
 
             /* Reenviamos el mensaje al usuario */
-            sendPacket(QXmppMessage("",UserTo->getJID(),NickFrom+": "+msg.body()));
+            sendPacket(QXmppMessage("",UserTo->getJID()+"/"+UserTo->getResource(),NameFrom+": "+msg.body()));
         }
     }
 }
