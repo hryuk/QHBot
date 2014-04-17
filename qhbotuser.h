@@ -33,6 +33,7 @@ private:
     QString jid;
     QString nick;
     QString lastResourceUsed;
+    QMap<QString, bool> resource_state;
     QMap<QString,QXmppPresence> nodos;
     QList<QHBotGroup*> memberGroups;
     bool Snooze;
@@ -43,6 +44,7 @@ signals:
     
 public slots:
     void setLastResourceUsed(QString resourceName);
+    void setLastResourceState(bool state);
     void setNick(QString newNick);
     void setJID(QString jid);
     void update(QXmppRosterIq::Item item);

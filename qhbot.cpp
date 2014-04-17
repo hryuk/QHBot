@@ -126,6 +126,7 @@ void QHBot::sendBroadcast(const QXmppMessage &msg)
     else
     {
         QHBotUser* UserFrom=UserManager->getUser(msg.from().mid(0,msg.from().indexOf('/')));
+        UserFrom->setLastResourceUsed(msg.from().mid(msg.from().indexOf('/')));
         JidFrom=UserFrom->getJID();
         NickFrom=UserFrom->getNick();
     }
@@ -134,7 +135,10 @@ void QHBot::sendBroadcast(const QXmppMessage &msg)
     foreach(QHBotUser* UserTo,UserManager->getUsers())
     {
         /* Para reenviar, usuario tiene que estar conectado y no ser el remitente */
-        if(UserTo->isAvailable() && UserTo->getJID()!=JidFrom && !UserTo->isSnoozing())
+        if(UserTo->isAvailable() &&
+            UserTo->getJID()!=JidFrom &&
+            !UserTo->isSnoozing() &&
+            )
         {
             qDebug()<<"Reenviando a "+UserTo->getJID();
 
