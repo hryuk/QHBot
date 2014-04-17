@@ -3,7 +3,7 @@
 QHBotCommands::QHBotCommands(QHBotUserManager* UserManager, QObject *parent): QObject(parent)
 {
     this->UserManager=UserManager;
-    this->commands<<"hello"<<"invite"<<"setnick"<<"help"<<"list"<<"setquote"<<"loadquote"<<"busy"<<"back"<<"source"<<"nick";
+    this->commands<<"hello"<<"invite"<<"setnick"<<"help"<<"list"<<"setquote"<<"loadquote"<<"busy"<<"back"<<"source"<<"nick"<<"setdevice"<<"me";
     this->runCmdLoadQuotes();
 }
 
@@ -24,68 +24,66 @@ void QHBotCommands::runCommand(const QXmppMessage &msg)
 
     arg.removeAt(0);
 
+    qDebug()<< "Ejecutando commando "+CommandName;
     switch(commands.indexOf(CommandName,0))
     {
     case -1://Si no encuentra el comando.
         qWarning()<<"Comando " + CommandName+ " No Encontrado";
-        break;
+    break;
 
     case 0://hello
-        qDebug()<< "Ejecutando commando "+CommandName;
         this->runCmdHello();
-        break;
+    break;
 
     case 1://invite
         if(!admList.contains(from)) return;
-        qDebug()<< "Ejecutando commando "+CommandName;
         this->runCmdInvite(arg);
-        break;
+    break;
 
     case 2://setnick
-        qDebug()<< "Ejecutando commando "+CommandName;
         this->runCmdSetNick(arg,from);
-        break;
+    break;
 
     case 3://help
-        qDebug()<< "Ejecutando commando "+CommandName;
         this->runCmdHelp(from);
     break;
 
     case 4://list
-        qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdList(from);
     break;
 
     case 5://setquote
         /*
-        qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdSetQuote(arg);
         */
     break;
 
     case 6://loadquotes
-        qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdLoadQuotes();
     break;
 
     case 7://busy
-        qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdBusy(from);
     break;
 
     case 8://back
-        qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdBack(from);
     break;
 
     case 9://source
-        qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdSource(from);
     break;
 
     case 10://nick
-        qDebug()<<"Ejecutando comando "+CommandName;
         this->runCmdNick(arg,from);
+    break;
+
+    case 11://setdevice
+        this->runCmdSetDevice(arg,from);
+    break;
+
+    case 12://me
+        this->runCmdMe(arg,from);
     break;
     }
 }
@@ -165,6 +163,7 @@ void QHBotCommands::runCmdHelp(const QString &from)
     help<<QString("/back: Quita el estado de ausencia\n");
     help<<QString("/help: Muestra este mensaje de ayuda\n");
     help<<QString("/source: Muestra donde se aloja el código del bot\n");
+    help<<QString("/setdevice on|off: Activa/desactiva el envio de mensajes a cierto dispositvo del usuario (handle) \n");
     if(admList.contains(from))
     {
         help<<QString("/setnick <email> <nick>: Cambia el nick a un usuario en concreto\n");
@@ -198,6 +197,21 @@ void QHBotCommands::runCmdBack(const QString &from)
     {
         UserManager->getUser(from)->setSnooze(false);
         emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",UserManager->getUser(from)->getNick()+" ha vuelto"));
+    }
+}
+
+void QHBotCommands::runCmdSetDevice(const QStringList &arg, const QString &from){
+    if(arg.length() != 1) return;
+
+    UserManager->getUser(from)->setLastResourceState(arg[0]=="on");
+}
+
+void QHBotCommands::runCmdMe(const QStringList &arg, const QString &from){
+    if(arg.length() != 1) return;
+
+    if(!UserManager->getUser(from)->isSnoozing()){
+        UserManager->getUser(from)->setSnooze(false);
+        emit messageRequest(QXmppMessage("bot@h-sec.org","broadcast",UserManager->getUser(from)->getNick()+" "+arg[0]));
     }
 }
 

@@ -56,7 +56,8 @@ private slots:
     void runCmdBack(const QString &from);
     void runCmdSource(const QString &from);
     void runCmdNick(const QStringList &arg, const QString &from);
-    
+    void runCmdSetDevice(const QStringList &arg, const QString &from);
+    void QHBotCommands::runCmdMe(const QStringList &arg, const QString &from);
 };
 
 #endif // QHBOTCOMMANDS_H
