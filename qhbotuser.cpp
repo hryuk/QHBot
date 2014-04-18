@@ -88,9 +88,7 @@ bool QHBotUser::isAvailable(QString resourceName)
 
 void QHBotUser::setLastResourceUsed(QString resourceName)
 {
-    resource_state.contains(ResourceName)?
-        resource_state[ResourceName] = true:
-        resource_state.insert(ResourceName, true);
+    resource_state.insert(resourceName,true);
 
     lastResourceUsed = resourceName;
 }

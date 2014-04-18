@@ -26,7 +26,7 @@ win32 {
 }
 
 unix{
-    LIBS += -lqxmpp0
+    LIBS += -lqxmpp
 }
 
 HEADERS += \
